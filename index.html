@@ -27,7 +27,7 @@
 </head>
 <body class="bg-[#07070a] text-zinc-100 min-h-screen flex flex-col justify-between pb-28 select-none">
 
-    <!-- Top Premium Navigation Bar -->
+    <!-- Top Navigation Bar -->
     <header class="flex items-center justify-between p-4 bg-[#0d0e12] border-b border-zinc-800/60 sticky top-0 z-50">
         <div class="flex items-center gap-3">
             <div id="user-avatar" class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 text-white flex items-center justify-center font-bold text-sm tracking-wider shadow-lg shadow-indigo-500/20">
@@ -97,7 +97,7 @@
                 </button>
             </div>
 
-            <!-- Form Supporting the 9 Casinos -->
+            <!-- Form Supporting the 6 Requested Casinos -->
             <div id="add-account-form" class="bg-[#0d0e12] border border-zinc-800 p-4 rounded-xl mb-4 hidden shadow-2xl">
                 <h3 class="text-xs font-bold text-zinc-200 mb-3 uppercase tracking-wider">Configure Terminal</h3>
                 <div class="space-y-3">
@@ -107,11 +107,8 @@
                             <option value="Stake.com">Stake.com</option>
                             <option value="Stake.us">Stake.us</option>
                             <option value="Roobet.com">Roobet.com</option>
-                            <option value="Rollbit.com">Rollbit.com</option>
                             <option value="Rainbet.com">Rainbet.com</option>
                             <option value="Shuffle.com">Shuffle.com</option>
-                            <option value="BC.Game">BC.Game</option>
-                            <option value="Gamdom.com">Gamdom.com</option>
                             <option value="Thrill.com">Thrill.com</option>
                         </select>
                     </div>
@@ -189,7 +186,7 @@
         lucide.createIcons();
         const tg = window.Telegram?.WebApp;
         
-        const API_SERVER = "https://affluent-diary-sulphuric.ngrok-free.dev"; 
+        const API_SERVER = "https://affluent-diary-sulphuric.ngrok-free.dev"; // Your active ngrok URL
         let telegramUserId = 123456789;
 
         if (tg) {
