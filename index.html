@@ -4,119 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Aether Auth Hub</title>
-    <!-- Tailwind CSS for high-end matte styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
     </style>
 </head>
-<body class="bg-[#09090b] text-zinc-100 min-h-screen flex flex-col justify-between select-none pb-24">
+<body class="bg-[#09090b] text-zinc-100 min-h-screen flex flex-col justify-between pb-24 select-none">
 
-    <!-- Premium Minimal Header -->
+    <!-- Header -->
     <header class="flex items-center justify-between p-4 bg-[#121214] border-b border-zinc-800/80">
         <div class="flex items-center gap-3">
             <div id="user-avatar" class="w-8 h-8 rounded-lg bg-violet-600 text-white flex items-center justify-center font-bold text-sm tracking-wider">
                 A
             </div>
             <div>
-                <h1 id="user-name" class="font-semibold text-xs tracking-wide text-zinc-400 uppercase">Aether Console</h1>
-                <p id="user-display" class="text-xs font-bold text-zinc-100">Loading Node...</p>
+                <h1 class="font-semibold text-xs tracking-wide text-zinc-400 uppercase">Aether Node</h1>
+                <p id="user-display" class="text-xs font-bold text-zinc-100">Loading User...</p>
             </div>
         </div>
-        <div>
-            <span class="text-[10px] bg-zinc-800 border border-zinc-700 px-2 py-1 rounded-md text-zinc-400 font-mono tracking-widest">v2.4.0</span>
-        </div>
+        <span class="text-[10px] bg-zinc-800 border border-zinc-700 px-2 py-1 rounded-md text-zinc-400 font-mono tracking-widest">v2.4.0</span>
     </header>
 
-    <!-- Main Scrollable Section -->
+    <!-- Content -->
     <main class="flex-1 p-4 overflow-y-auto">
         
-        <!-- Live System Status Strip -->
+        <!-- Status Indicator -->
         <div class="bg-[#0c1914] border border-emerald-900/60 rounded-xl p-3 flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <p class="text-[11px] text-emerald-400 font-bold uppercase tracking-wider">All Systems Operational</p>
             </div>
-            <p class="text-[10px] text-zinc-500 font-mono">Load: 14%</p>
+            <p class="text-[10px] text-zinc-500 font-mono">Nodes: Active</p>
         </div>
 
-        <!-- 1. DASHBOARD VIEW -->
-        <div id="tab-dashboard" class="tab-content">
-            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-3">Core Performance</h2>
-            
-            <!-- Live Grid Analytics -->
-            <div class="grid grid-cols-2 gap-3 mb-5">
-                <div class="bg-[#121214] border border-zinc-800/80 p-3.5 rounded-xl">
-                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">API Node Latency</p>
-                    <p class="text-lg font-bold text-zinc-200">18ms <span class="text-xs text-emerald-500 font-normal">▲ Fast</span></p>
-                </div>
-                <div class="bg-[#121214] border border-zinc-800/80 p-3.5 rounded-xl">
-                    <p class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Request Quota</p>
-                    <p class="text-lg font-bold text-zinc-200">Unlimited</p>
-                </div>
-            </div>
-
-            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-3">Subscription Status</h2>
-            
-            <!-- Sleek Status Card -->
-            <div class="bg-[#121214] border border-zinc-800/80 rounded-xl p-4 mb-4">
-                <div class="flex justify-between items-start mb-3">
-                    <div>
-                        <h3 class="text-xs font-bold text-zinc-300">Basic Runtime Client</h3>
-                        <p class="text-[10px] text-zinc-500">Access Key: <span id="my-license-short" class="font-mono">LKEY-NONE</span></p>
-                    </div>
-                    <span class="text-[10px] bg-red-950/40 text-red-400 border border-red-900/60 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Inactive</span>
-                </div>
-                <p class="text-xs text-zinc-400 mb-4 leading-relaxed">You do not have an active database verification stream. Configure your license subscription below to unlock authentication queries.</p>
-                
-                <button onclick="switchTab('subscribe', document.getElementById('sub-btn-nav'))" class="w-full bg-violet-600 hover:bg-violet-500 text-white font-bold py-3 px-4 rounded-lg text-xs tracking-wider uppercase transition-all">
-                    Upgrade Access
+        <!-- 1. ACCOUNTS TAB -->
+        <div id="tab-accounts" class="tab-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase">My Accounts</h2>
+                <button onclick="toggleAddAccountForm()" class="bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 uppercase tracking-wider">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add
                 </button>
             </div>
+
+            <!-- Dynamic Input Form for User Credentials -->
+            <div id="add-account-form" class="bg-[#121214] border border-zinc-800 p-4 rounded-xl mb-4 hidden">
+                <h3 class="text-xs font-bold text-zinc-200 mb-3 uppercase tracking-wider">Add Connection Credential</h3>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Platform Target</label>
+                        <select id="acc-platform" class="w-full bg-[#09090b] border border-zinc-800 text-zinc-300 p-2.5 rounded-lg text-xs outline-none">
+                            <option value="Stake.com">Stake.com</option>
+                            <option value="Shuffle.com">Shuffle.com</option>
+                            <option value="Custom API">Custom API Node</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Account Label / Username</label>
+                        <input id="acc-username" type="text" placeholder="e.g. PlayerOne" class="w-full bg-[#09090b] border border-[#1d2d4f] text-white px-3 py-2.5 rounded-lg text-xs outline-none focus:border-violet-600">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Session Token / API Key</label>
+                        <!-- Warning: Cryptographic storage practices must protect this sensitive input -->
+                        <input id="acc-token" type="password" placeholder="Paste session identifier key" class="w-full bg-[#09090b] border border-[#1d2d4f] text-white px-3 py-2.5 rounded-lg text-xs outline-none focus:border-violet-600">
+                    </div>
+                    <button onclick="submitNewAccount()" class="w-full bg-violet-600 hover:bg-violet-500 text-white font-bold py-2.5 rounded-lg text-xs tracking-wider uppercase transition-all">
+                        Register Account
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dynamic Account List Container -->
+            <div id="accounts-container" class="space-y-2">
+                <!-- Fallback Loading Text -->
+                <p class="text-xs text-zinc-500 text-center py-6">Connecting to licensing database...</p>
+            </div>
         </div>
 
-        <!-- 2. SUBSCRIBE VIEW -->
+        <!-- 2. PLANS/SUBSCRIBE VIEW -->
         <div id="tab-subscribe" class="tab-content hidden">
             <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">Available Plans</h2>
-            <p class="text-xs text-zinc-500 mb-4">Subscription levels for developer access keys.</p>
+            <p class="text-xs text-zinc-500 mb-4">Pricing plans for automatic background automation nodes.</p>
             
             <div class="space-y-3">
-                <!-- Tier 1 -->
-                <div onclick="simulatePurchase('Basic Tier', '$35')" class="bg-[#121214] border border-zinc-800 hover:border-violet-600 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
+                <div onclick="requestCheckout('Basic Tier', '35')" class="bg-[#121214] border border-zinc-800 hover:border-violet-600 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
                     <div>
-                        <p class="text-xs font-bold text-zinc-200">Basic Tier</p>
-                        <p class="text-[10px] text-zinc-500">30 days server validation</p>
+                        <p class="text-xs font-bold text-zinc-200">Basic Plan</p>
+                        <p class="text-[10px] text-zinc-500">30 Days validation access</p>
                     </div>
-                    <span class="text-sm font-bold text-violet-400">$35</span>
+                    <span class="text-sm font-bold text-violet-400">$35.00</span>
                 </div>
-                <!-- Tier 2 -->
-                <div onclick="simulatePurchase('Pro Tier', '$90')" class="bg-[#121214] border border-zinc-800 hover:border-violet-600 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
+                <div onclick="requestCheckout('Pro Tier', '90')" class="bg-[#121214] border border-zinc-800 hover:border-violet-600 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
                     <div>
-                        <p class="text-xs font-bold text-zinc-200">Pro Tier</p>
-                        <p class="text-[10px] text-zinc-500">90 days server validation</p>
+                        <p class="text-xs font-bold text-zinc-200">Pro Plan</p>
+                        <p class="text-[10px] text-zinc-500">90 Days validation access</p>
                     </div>
-                    <span class="text-sm font-bold text-violet-400">$90</span>
-                </div>
-                <!-- Tier 3 -->
-                <div onclick="simulatePurchase('Lifetime Node', '$250')" class="bg-[#121214] border border-zinc-800 hover:border-violet-600 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
-                    <div>
-                        <p class="text-xs font-bold text-zinc-200">Lifetime Node</p>
-                        <p class="text-[10px] text-zinc-500">Unlimited server validation</p>
-                    </div>
-                    <span class="text-sm font-bold text-violet-400">$250</span>
+                    <span class="text-sm font-bold text-violet-400">$90.00</span>
                 </div>
             </div>
         </div>
 
         <!-- 3. CONFIGURATION VIEW -->
         <div id="tab-config" class="tab-content hidden">
-            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">Node Parameters</h2>
-            <p class="text-xs text-zinc-500 mb-4">Manage access credentials and runtime keys.</p>
+            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">System Keys</h2>
+            <p class="text-xs text-zinc-500 mb-4">View and copy your backend connection key.</p>
             
             <div class="bg-[#121214] border border-zinc-800/80 rounded-xl p-4 mb-3">
                 <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-2">Hardware License Key</label>
@@ -125,32 +120,12 @@
                     <button onclick="copyLicense()" class="text-zinc-500 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
                 </div>
             </div>
-
-            <div class="bg-[#121214] border border-zinc-800/80 rounded-xl p-4">
-                <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-2">External Authentication API Key</label>
-                <input id="user-api-input" type="password" placeholder="Paste external API key here" class="w-full bg-[#09090b] border border-zinc-800 text-zinc-200 px-3 py-2.5 rounded-lg text-xs mb-3 outline-none focus:border-violet-600 font-mono">
-                <button onclick="saveApiKey()" class="w-full bg-violet-600 hover:bg-violet-500 text-white font-bold py-2.5 rounded-lg text-xs tracking-wider uppercase transition-all">
-                    Save Key Setup
-                </button>
-            </div>
         </div>
 
-        <!-- 4. LOGS VIEW -->
-        <div id="tab-logs" class="tab-content hidden">
-            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">Authorization Logs</h2>
-            <p class="text-xs text-zinc-500 mb-4">Real-time status updates from the licensing server.</p>
-            
-            <div class="bg-[#121214] border border-zinc-800/80 rounded-xl p-3 font-mono text-[10px] text-zinc-400 space-y-2">
-                <p class="text-zinc-500">[12:44:02] Initializing Aether Auth core...</p>
-                <p class="text-emerald-500">[12:44:03] Secure connection established with node.</p>
-                <p class="text-zinc-500">[12:44:04] Waiting for active license validation parameter...</p>
-            </div>
-        </div>
-
-        <!-- 5. PREFERENCES VIEW -->
-        <div id="tab-prefs" class="tab-content hidden">
+        <!-- 4. SETTINGS VIEW -->
+        <div id="tab-settings" class="tab-content hidden">
             <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">Preferences</h2>
-            <p class="text-xs text-zinc-500 mb-4">Adjust interface setup and user definitions.</p>
+            <p class="text-xs text-zinc-500 mb-4">Profile credentials and node variables.</p>
             
             <div class="bg-[#121214] border border-zinc-800/80 p-4 rounded-xl space-y-3">
                 <div class="flex justify-between items-center text-xs">
@@ -158,33 +133,29 @@
                     <span id="my-tg-id" class="font-mono text-zinc-200">Pending...</span>
                 </div>
                 <div class="flex justify-between items-center text-xs border-t border-zinc-800/80 pt-3">
-                    <span class="text-zinc-400">License Expiration</span>
+                    <span class="text-zinc-400">License Expiry</span>
                     <span id="my-license-expiry" class="font-bold text-yellow-500">Checking...</span>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Floating Minimal Bottom Navigation -->
+    <!-- Floating Navigation Bar -->
     <div class="fixed bottom-3 left-3 right-3 bg-[#121214]/90 backdrop-blur-md border border-zinc-800/80 rounded-2xl shadow-xl py-2 px-1">
         <nav class="flex items-center justify-around">
-            <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-violet-400" onclick="switchTab('dashboard', this)">
-                <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                <span class="text-[9px] font-bold uppercase tracking-wider">Node</span>
+            <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-violet-400" onclick="switchTab('accounts', this)">
+                <i data-lucide="users" class="w-4 h-4"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Accounts</span>
             </button>
             <button id="sub-btn-nav" class="nav-btn flex flex-col items-center gap-1 flex-1 text-zinc-500" onclick="switchTab('subscribe', this)">
-                <i data-lucide="shield-check" class="w-4 h-4"></i>
-                <span class="text-[9px] font-bold uppercase tracking-wider">Plans</span>
+                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Buy</span>
             </button>
             <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-zinc-500" onclick="switchTab('config', this)">
-                <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
-                <span class="text-[9px] font-bold uppercase tracking-wider">Config</span>
+                <i data-lucide="key" class="w-4 h-4"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wider font-mono">Keys</span>
             </button>
-            <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-zinc-500" onclick="switchTab('logs', this)">
-                <i data-lucide="terminal" class="w-4 h-4"></i>
-                <span class="text-[9px] font-bold uppercase tracking-wider">Logs</span>
-            </button>
-            <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-zinc-500" onclick="switchTab('prefs', this)">
+            <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-zinc-500" onclick="switchTab('settings', this)">
                 <i data-lucide="user-cog" class="w-4 h-4"></i>
                 <span class="text-[9px] font-bold uppercase tracking-wider">Prefs</span>
             </button>
@@ -195,10 +166,10 @@
         lucide.createIcons();
         const tg = window.Telegram?.WebApp;
         
-        // Define your active FastAPI server address:
+        // Define your active public tunnel address here:
         const API_SERVER = "https://a1b2-34-56-78.ngrok-free.app"; // Replace with your live ngrok/tunnel address
         
-        let telegramUserId = 123456789; // Fallback Sandbox ID
+        let telegramUserId = 123456789; // Default sandbox ID
 
         if (tg) {
             tg.expand();
@@ -212,7 +183,12 @@
         }
         document.getElementById('my-tg-id').innerText = telegramUserId;
 
-        // Fetch user data from database via API
+        function toggleAddAccountForm() {
+            const form = document.getElementById('add-account-form');
+            form.classList.toggle('hidden');
+        }
+
+        // Render Database Records Dynamically
         async function loadUserInfo() {
             try {
                 const response = await fetch(`${API_SERVER}/get_user_info`, {
@@ -223,30 +199,100 @@
                 if (response.ok) {
                     const data = await response.json();
                     document.getElementById('my-license-key').value = data.license_key;
-                    document.getElementById('my-license-short').innerText = data.license_key.substring(0, 9) + "...";
                     document.getElementById('my-license-expiry').innerText = data.expiry_date;
-                    document.getElementById('user-api-input').value = data.api_key || "";
+                    
+                    renderAccounts(data.accounts);
                 }
             } catch (err) {
-                console.error("Backend offline: ", err);
+                console.error("Backend unreachable: ", err);
             }
         }
 
-        async function saveApiKey() {
-            const apiKey = document.getElementById('user-api-input').value;
+        function renderAccounts(accounts) {
+            const container = document.getElementById('accounts-container');
+            container.innerHTML = "";
+
+            if (!accounts || accounts.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-[#121214] border border-zinc-800/80 rounded-xl p-6 text-center">
+                        <p class="text-xs text-zinc-500">No automated credentials registered yet.</p>
+                    </div>`;
+                return;
+            }
+
+            accounts.forEach(acc => {
+                const card = document.createElement('div');
+                card.className = "bg-[#121214] border border-zinc-800/80 rounded-xl p-3.5 flex justify-between items-center";
+                card.innerHTML = `
+                    <div class="flex flex-col">
+                        <span class="text-[9px] uppercase tracking-wider font-bold text-violet-400">${acc.platform}</span>
+                        <span class="text-xs font-bold text-zinc-200 mt-0.5">${acc.username}</span>
+                        <span class="text-[9px] text-zinc-500 font-mono mt-0.5">Token: ${acc.auth_token.substring(0, 8)}...</span>
+                    </div>
+                    <button onclick="deleteAccount(${acc.id})" class="text-zinc-500 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-950/20 transition-all">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        async function submitNewAccount() {
+            const platform = document.getElementById('acc-platform').value;
+            const username = document.getElementById('acc-username').value;
+            const token = document.getElementById('acc-token').value;
+
+            if (!username || !token) {
+                if (tg) tg.showAlert("Please fill out all credential fields.");
+                return;
+            }
+
             try {
-                const response = await fetch(`${API_SERVER}/update_api`, {
+                const response = await fetch(`${API_SERVER}/accounts/add`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ telegram_id: telegramUserId, api_key: apiKey })
+                    body: JSON.stringify({
+                        telegram_id: telegramUserId,
+                        platform: platform,
+                        username: username,
+                        auth_token: token
+                    })
                 });
-                const result = await response.json();
-                if (response.ok && result.success) {
-                    if (tg) tg.showAlert("API credentials successfully registered!");
-                    else alert("API credentials saved!");
+                if (response.ok) {
+                    document.getElementById('acc-username').value = "";
+                    document.getElementById('acc-token').value = "";
+                    toggleAddAccountForm();
+                    loadUserInfo(); // Reload live list
                 }
             } catch (err) {
-                console.error("Connection error: ", err);
+                console.error("Failed to register: ", err);
+            }
+        }
+
+        async function deleteAccount(accountId) {
+            try {
+                const response = await fetch(`${API_SERVER}/accounts/delete`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ account_id: accountId, telegram_id: telegramUserId })
+                });
+                if (response.ok) {
+                    loadUserInfo(); // Refresh UI
+                }
+            } catch (err) {
+                console.error("Delete call failed: ", err);
+            }
+        }
+
+        // ================= INTEGRATED PAYMENT PROCESSING IN BOT =================
+        function requestCheckout(planName, amount) {
+            if (tg) {
+                // Instantly directs users to checkout via the bot using standard buttons
+                tg.showAlert(`Please exit to the chat window to pay for ${planName} ($${amount}).`);
+                tg.close();
+            } else {
+                alert(`Redirecting to mock checkout for ${planName}...`);
             }
         }
 
@@ -255,13 +301,7 @@
             input.select();
             input.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(input.value);
-            if (tg) tg.showAlert("License key copied to clipboard!");
-            else alert("Copied!");
-        }
-
-        function simulatePurchase(planName, price) {
-            if (tg) tg.showAlert(`To purchase ${planName} for ${price}, send /buy in the Telegram chat.`);
-            else alert(`Select /buy in the bot chat to purchase the ${planName} ($${price}).`);
+            if (tg) tg.showAlert("Key copied!");
         }
 
         function switchTab(tabId, buttonElement) {
@@ -274,10 +314,6 @@
             });
             buttonElement.classList.add('text-violet-400');
             buttonElement.classList.remove('text-zinc-500');
-        }
-
-        function closeApp() {
-            if (tg) tg.close();
         }
 
         loadUserInfo();
