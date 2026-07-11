@@ -3,145 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aether Auth Hub</title>
+    <title>Aether Auth Console</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+            font-family: ui-sans-serif, system-ui, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
     </style>
 </head>
 <body class="bg-[#09090b] text-zinc-100 min-h-screen flex flex-col justify-between pb-24 select-none">
 
-    <!-- Header -->
+    <!-- Header Section -->
     <header class="flex items-center justify-between p-4 bg-[#121214] border-b border-zinc-800/80">
         <div class="flex items-center gap-3">
             <div id="user-avatar" class="w-8 h-8 rounded-lg bg-violet-600 text-white flex items-center justify-center font-bold text-sm tracking-wider">
                 A
             </div>
             <div>
-                <h1 class="font-semibold text-xs tracking-wide text-zinc-400 uppercase">Aether Node</h1>
-                <p id="user-display" class="text-xs font-bold text-zinc-100">Loading User...</p>
+                <h1 class="font-semibold text-xs tracking-wide text-zinc-400 uppercase">Aether Client</h1>
+                <p id="user-display" class="text-xs font-bold text-zinc-100">Loading Node...</p>
             </div>
         </div>
         <span class="text-[10px] bg-zinc-800 border border-zinc-700 px-2 py-1 rounded-md text-zinc-400 font-mono tracking-widest">v2.4.0</span>
     </header>
 
-    <!-- Content -->
+    <!-- Main Content Viewport -->
     <main class="flex-1 p-4 overflow-y-auto">
         
-        <!-- Status Indicator -->
+        <!-- Live System Status Strip -->
         <div class="bg-[#0c1914] border border-emerald-900/60 rounded-xl p-3 flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <p class="text-[11px] text-emerald-400 font-bold uppercase tracking-wider">All Systems Operational</p>
             </div>
-            <p class="text-[10px] text-zinc-500 font-mono">Nodes: Active</p>
+            <p class="text-[10px] text-zinc-500 font-mono">Status: Connected</p>
         </div>
 
-        <!-- 1. ACCOUNTS TAB -->
+        <!-- TAB 1: ACCOUNTS MANAGER -->
         <div id="tab-accounts" class="tab-content">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase">My Accounts</h2>
                 <button onclick="toggleAddAccountForm()" class="bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 uppercase tracking-wider">
-                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Account
                 </button>
             </div>
 
-            <!-- Dynamic Input Form for User Credentials -->
+            <!-- Add Account Form Inputs -->
             <div id="add-account-form" class="bg-[#121214] border border-zinc-800 p-4 rounded-xl mb-4 hidden">
-                <h3 class="text-xs font-bold text-zinc-200 mb-3 uppercase tracking-wider">Add Connection Credential</h3>
+                <h3 class="text-xs font-bold text-zinc-200 mb-3 uppercase tracking-wider">Register Target Account</h3>
                 <div class="space-y-3">
                     <div>
-                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Platform Target</label>
+                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Target Platform</label>
                         <select id="acc-platform" class="w-full bg-[#09090b] border border-zinc-800 text-zinc-300 p-2.5 rounded-lg text-xs outline-none">
                             <option value="Stake.com">Stake.com</option>
                             <option value="Shuffle.com">Shuffle.com</option>
-                            <option value="Custom API">Custom API Node</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Account Label / Username</label>
-                        <input id="acc-username" type="text" placeholder="e.g. PlayerOne" class="w-full bg-[#09090b] border border-[#1d2d4f] text-white px-3 py-2.5 rounded-lg text-xs outline-none focus:border-violet-600">
+                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Username / Account Label</label>
+                        <input id="acc-username" type="text" placeholder="e.g. PlayerOne" class="w-full bg-[#09090b] border border-zinc-800 text-white px-3 py-2.5 rounded-lg text-xs outline-none focus:border-violet-600">
                     </div>
                     <div>
-                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Session Token / API Key</label>
-                        <!-- Warning: Cryptographic storage practices must protect this sensitive input -->
-                        <input id="acc-token" type="password" placeholder="Paste session identifier key" class="w-full bg-[#09090b] border border-[#1d2d4f] text-white px-3 py-2.5 rounded-lg text-xs outline-none focus:border-violet-600">
+                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Authorization Cookie / Token</label>
+                        <input id="acc-token" type="password" placeholder="Paste account session identifier" class="w-full bg-[#09090b] border border-zinc-800 text-white px-3 py-2.5 rounded-lg text-xs outline-none focus:border-violet-600 font-mono">
                     </div>
                     <button onclick="submitNewAccount()" class="w-full bg-violet-600 hover:bg-violet-500 text-white font-bold py-2.5 rounded-lg text-xs tracking-wider uppercase transition-all">
-                        Register Account
+                        Link Account
                     </button>
                 </div>
             </div>
 
-            <!-- Dynamic Account List Container -->
             <div id="accounts-container" class="space-y-2">
-                <!-- Fallback Loading Text -->
-                <p class="text-xs text-zinc-500 text-center py-6">Connecting to licensing database...</p>
+                <p class="text-xs text-zinc-500 text-center py-6">Connecting to database...</p>
             </div>
         </div>
 
-        <!-- 2. PLANS/SUBSCRIBE VIEW -->
+        <!-- TAB 2: PRICING PLANS -->
         <div id="tab-subscribe" class="tab-content hidden">
-            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">Available Plans</h2>
-            <p class="text-xs text-zinc-500 mb-4">Pricing plans for automatic background automation nodes.</p>
+            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">Pricing Plans</h2>
+            <p class="text-xs text-zinc-500 mb-4">Extend your server-side claim validity duration.</p>
             
             <div class="space-y-3">
-                <div onclick="requestCheckout('Basic Tier', '35')" class="bg-[#121214] border border-zinc-800 hover:border-violet-600 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
+                <div onclick="requestCheckout('Basic Subscription', 35.00)" class="bg-[#121214] border border-zinc-800 hover:border-violet-600 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
                     <div>
-                        <p class="text-xs font-bold text-zinc-200">Basic Plan</p>
-                        <p class="text-[10px] text-zinc-500">30 Days validation access</p>
+                        <p class="text-xs font-bold text-zinc-200">Basic Tier</p>
+                        <p class="text-[10px] text-zinc-500">30 days claiming node access</p>
                     </div>
                     <span class="text-sm font-bold text-violet-400">$35.00</span>
                 </div>
-                <div onclick="requestCheckout('Pro Tier', '90')" class="bg-[#121214] border border-zinc-800 hover:border-violet-600 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
+                <div onclick="requestCheckout('Pro Subscription', 90.00)" class="bg-[#121214] border border-zinc-800 hover:border-violet-600 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
                     <div>
-                        <p class="text-xs font-bold text-zinc-200">Pro Plan</p>
-                        <p class="text-[10px] text-zinc-500">90 Days validation access</p>
+                        <p class="text-xs font-bold text-zinc-200">Pro Tier</p>
+                        <p class="text-[10px] text-zinc-500">90 days claiming node access</p>
                     </div>
                     <span class="text-sm font-bold text-violet-400">$90.00</span>
                 </div>
             </div>
         </div>
 
-        <!-- 3. CONFIGURATION VIEW -->
-        <div id="tab-config" class="tab-content hidden">
-            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">System Keys</h2>
-            <p class="text-xs text-zinc-500 mb-4">View and copy your backend connection key.</p>
+        <!-- TAB 3: SYSTEM CLAIM LOGS -->
+        <div id="tab-logs" class="tab-content hidden">
+            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">Active Claim Logs</h2>
+            <p class="text-xs text-zinc-500 mb-4">View actual, server-logged claim status for your linked accounts.</p>
             
-            <div class="bg-[#121214] border border-zinc-800/80 rounded-xl p-4 mb-3">
-                <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-2">Hardware License Key</label>
-                <div class="flex items-center gap-2 bg-[#09090b] border border-zinc-800 rounded-lg p-2.5">
-                    <input id="my-license-key" type="text" readonly value="LKEY-LOADING..." class="bg-transparent text-xs text-zinc-300 w-full outline-none font-mono">
-                    <button onclick="copyLicense()" class="text-zinc-500 hover:text-white"><i data-lucide="copy" class="w-4 h-4"></i></button>
-                </div>
+            <div id="logs-container" class="bg-[#121214] border border-zinc-800/80 rounded-xl p-3 font-mono text-[10px] text-zinc-400 space-y-2.5">
+                <p class="text-zinc-500 text-center py-6">No historical records saved.</p>
             </div>
         </div>
 
-        <!-- 4. SETTINGS VIEW -->
+        <!-- TAB 4: PREFERENCES -->
         <div id="tab-settings" class="tab-content hidden">
             <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">Preferences</h2>
-            <p class="text-xs text-zinc-500 mb-4">Profile credentials and node variables.</p>
+            <p class="text-xs text-zinc-500 mb-4 font-mono">UID: <span id="my-tg-id" class="text-zinc-300">Pending</span></p>
             
             <div class="bg-[#121214] border border-zinc-800/80 p-4 rounded-xl space-y-3">
                 <div class="flex justify-between items-center text-xs">
-                    <span class="text-zinc-400">Telegram Client ID</span>
-                    <span id="my-tg-id" class="font-mono text-zinc-200">Pending...</span>
-                </div>
-                <div class="flex justify-between items-center text-xs border-t border-zinc-800/80 pt-3">
-                    <span class="text-zinc-400">License Expiry</span>
-                    <span id="my-license-expiry" class="font-bold text-yellow-500">Checking...</span>
+                    <span class="text-zinc-400">License Status</span>
+                    <span id="my-license-expiry" class="font-bold text-yellow-500">Retrieving status...</span>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Floating Navigation Bar -->
-    <div class="fixed bottom-3 left-3 right-3 bg-[#121214]/90 backdrop-blur-md border border-zinc-800/80 rounded-2xl shadow-xl py-2 px-1">
+    <!-- Floating Navigation pill -->
+    <div class="fixed bottom-3 left-3 right-3 bg-[#121214]/95 backdrop-blur-md border border-zinc-800/80 rounded-2xl shadow-xl py-2 px-1">
         <nav class="flex items-center justify-around">
             <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-violet-400" onclick="switchTab('accounts', this)">
                 <i data-lucide="users" class="w-4 h-4"></i>
@@ -151,12 +139,12 @@
                 <i data-lucide="shopping-cart" class="w-4 h-4"></i>
                 <span class="text-[9px] font-bold uppercase tracking-wider">Buy</span>
             </button>
-            <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-zinc-500" onclick="switchTab('config', this)">
-                <i data-lucide="key" class="w-4 h-4"></i>
-                <span class="text-[9px] font-bold uppercase tracking-wider font-mono">Keys</span>
+            <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-zinc-500" onclick="switchTab('logs', this)">
+                <i data-lucide="terminal" class="w-4 h-4"></i>
+                <span class="text-[9px] font-bold uppercase tracking-wider">Logs</span>
             </button>
             <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-zinc-500" onclick="switchTab('settings', this)">
-                <i data-lucide="user-cog" class="w-4 h-4"></i>
+                <i data-lucide="sliders" class="w-4 h-4"></i>
                 <span class="text-[9px] font-bold uppercase tracking-wider">Prefs</span>
             </button>
         </nav>
@@ -166,10 +154,10 @@
         lucide.createIcons();
         const tg = window.Telegram?.WebApp;
         
-        // Define your active public tunnel address here:
-        const API_SERVER = "https://a1b2-34-56-78.ngrok-free.app"; // Replace with your live ngrok/tunnel address
+        // Define your active public tunnel address:
+        const API_SERVER = "https://a1b2-34-56-78.ngrok-free.app"; // Paste your ngrok link
         
-        let telegramUserId = 123456789; // Default sandbox ID
+        let telegramUserId = 123456789;
 
         if (tg) {
             tg.expand();
@@ -184,11 +172,10 @@
         document.getElementById('my-tg-id').innerText = telegramUserId;
 
         function toggleAddAccountForm() {
-            const form = document.getElementById('add-account-form');
-            form.classList.toggle('hidden');
+            document.getElementById('add-account-form').classList.toggle('hidden');
         }
 
-        // Render Database Records Dynamically
+        // Fetch user context dynamically
         async function loadUserInfo() {
             try {
                 const response = await fetch(`${API_SERVER}/get_user_info`, {
@@ -198,10 +185,9 @@
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    document.getElementById('my-license-key').value = data.license_key;
                     document.getElementById('my-license-expiry').innerText = data.expiry_date;
-                    
                     renderAccounts(data.accounts);
+                    renderLogs(data.logs);
                 }
             } catch (err) {
                 console.error("Backend unreachable: ", err);
@@ -227,7 +213,6 @@
                     <div class="flex flex-col">
                         <span class="text-[9px] uppercase tracking-wider font-bold text-violet-400">${acc.platform}</span>
                         <span class="text-xs font-bold text-zinc-200 mt-0.5">${acc.username}</span>
-                        <span class="text-[9px] text-zinc-500 font-mono mt-0.5">Token: ${acc.auth_token.substring(0, 8)}...</span>
                     </div>
                     <button onclick="deleteAccount(${acc.id})" class="text-zinc-500 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-950/20 transition-all">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -238,13 +223,35 @@
             lucide.createIcons();
         }
 
+        function renderLogs(logs) {
+            const container = document.getElementById('logs-container');
+            container.innerHTML = "";
+
+            if (!logs || logs.length === 0) {
+                container.innerHTML = `<p class="text-zinc-500 text-center py-6">No historical records logged yet.</p>`;
+                return;
+            }
+
+            logs.forEach(log => {
+                const logElement = document.createElement('p');
+                const timeStr = log.timestamp.split(" ")[1] || log.timestamp;
+                
+                let textClass = "text-zinc-400";
+                if (log.status.includes("Success")) textClass = "text-emerald-500 font-bold";
+                else if (log.status.includes("Expired") || log.status.includes("Failed")) textClass = "text-rose-500";
+
+                logElement.innerHTML = `<span class="text-zinc-600">[${timeStr}]</span> ${log.platform}: Code <span class="text-violet-400 font-bold">${log.code}</span> -> <span class="${textClass}">${log.status}</span>`;
+                container.appendChild(logElement);
+            });
+        }
+
         async function submitNewAccount() {
             const platform = document.getElementById('acc-platform').value;
             const username = document.getElementById('acc-username').value;
             const token = document.getElementById('acc-token').value;
 
             if (!username || !token) {
-                if (tg) tg.showAlert("Please fill out all credential fields.");
+                if (tg) tg.showAlert("Please fill out all credential inputs.");
                 return;
             }
 
@@ -263,10 +270,10 @@
                     document.getElementById('acc-username').value = "";
                     document.getElementById('acc-token').value = "";
                     toggleAddAccountForm();
-                    loadUserInfo(); // Reload live list
+                    loadUserInfo();
                 }
             } catch (err) {
-                console.error("Failed to register: ", err);
+                console.error("Register call failed: ", err);
             }
         }
 
@@ -278,30 +285,34 @@
                     body: JSON.stringify({ account_id: accountId, telegram_id: telegramUserId })
                 });
                 if (response.ok) {
-                    loadUserInfo(); // Refresh UI
+                    loadUserInfo();
                 }
             } catch (err) {
                 console.error("Delete call failed: ", err);
             }
         }
 
-        // ================= INTEGRATED PAYMENT PROCESSING IN BOT =================
-        function requestCheckout(planName, amount) {
-            if (tg) {
-                // Instantly directs users to checkout via the bot using standard buttons
-                tg.showAlert(`Please exit to the chat window to pay for ${planName} ($${amount}).`);
-                tg.close();
-            } else {
-                alert(`Redirecting to mock checkout for ${planName}...`);
+        // ================= SECURE GATEWAY INVOICE CALL =================
+        async function requestCheckout(planName, amount) {
+            try {
+                const response = await fetch(`${API_SERVER}/payments/create-invoice`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ telegram_id: telegramUserId, amount: amount, plan_name: planName })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    const checkoutUrl = data.checkout_url;
+                    // Automatically direct the client to execute the secure checkout process
+                    if (tg) {
+                        tg.openLink(checkoutUrl);
+                    } else {
+                        window.open(checkoutUrl, '_blank');
+                    }
+                }
+            } catch (err) {
+                console.error("Payment initialization failed: ", err);
             }
-        }
-
-        function copyLicense() {
-            const input = document.getElementById('my-license-key');
-            input.select();
-            input.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(input.value);
-            if (tg) tg.showAlert("Key copied!");
         }
 
         function switchTab(tabId, buttonElement) {
@@ -314,6 +325,11 @@
             });
             buttonElement.classList.add('text-violet-400');
             buttonElement.classList.remove('text-zinc-500');
+            
+            // Reload logs when clicking Logs tab
+            if (tabId === 'logs' || tabId === 'accounts') {
+                loadUserInfo();
+            }
         }
 
         loadUserInfo();
