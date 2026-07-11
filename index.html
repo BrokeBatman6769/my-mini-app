@@ -3,76 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aether Auth Console</title>
+    <title>Aether Claim Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            font-family: ui-sans-serif, system-ui, sans-serif;
+            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
     </style>
 </head>
 <body class="bg-[#09090b] text-zinc-100 min-h-screen flex flex-col justify-between pb-24 select-none">
 
-    <!-- Header Section -->
-    <header class="flex items-center justify-between p-4 bg-[#121214] border-b border-zinc-800/80">
+    <!-- Header -->
+    <header class="flex items-center justify-between p-4 bg-[#0e1424] border-b border-zinc-800/80">
         <div class="flex items-center gap-3">
             <div id="user-avatar" class="w-8 h-8 rounded-lg bg-violet-600 text-white flex items-center justify-center font-bold text-sm tracking-wider">
-                A
+                P
             </div>
             <div>
-                <h1 class="font-semibold text-xs tracking-wide text-zinc-400 uppercase">Aether Client</h1>
-                <p id="user-display" class="text-xs font-bold text-zinc-100">Loading Node...</p>
+                <h1 id="user-display" class="font-bold text-xs text-zinc-100">Polham</h1>
             </div>
         </div>
-        <span class="text-[10px] bg-zinc-800 border border-zinc-700 px-2 py-1 rounded-md text-zinc-400 font-mono tracking-widest">v2.4.0</span>
+        <span class="text-xs bg-[#16223f] border border-[#23355c] px-2 py-1 rounded text-slate-300 font-mono font-bold">GB EN</span>
     </header>
 
-    <!-- Main Content Viewport -->
     <main class="flex-1 p-4 overflow-y-auto">
-        
-        <!-- Live System Status Strip -->
-        <div class="bg-[#0c1914] border border-emerald-900/60 rounded-xl p-3 flex items-center justify-between mb-4">
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <p class="text-[11px] text-emerald-400 font-bold uppercase tracking-wider">All Systems Operational</p>
-            </div>
-            <p class="text-[10px] text-zinc-500 font-mono">Status: Connected</p>
-        </div>
 
-        <!-- TAB 1: ACCOUNTS MANAGER -->
-        <div id="tab-accounts" class="tab-content">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase">My Accounts</h2>
-                <button onclick="toggleAddAccountForm()" class="bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 uppercase tracking-wider">
-                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Account
+        <!-- TAB 1: REAL-TIME CLAIM DASHBOARD (Matches Screenshot) -->
+        <div id="tab-logs" class="tab-content">
+            <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="bar-chart-3" class="w-5 h-5 text-zinc-400"></i>
+                <h2 class="text-base font-bold text-zinc-200">Claim Dashboard</h2>
+            </div>
+
+            <!-- Time Filter Menu -->
+            <div class="grid grid-cols-4 gap-1.5 mb-3 bg-[#121214] p-1 rounded-xl border border-zinc-800/60">
+                <button onclick="changeTimeFilter('today', this)" class="time-filter-btn text-[11px] font-bold py-2 rounded-lg bg-[#00ffcc] text-[#09090b] transition-all">Today</button>
+                <button onclick="changeTimeFilter('7days', this)" class="time-filter-btn text-[11px] font-bold py-2 rounded-lg text-zinc-400 hover:text-white transition-all">7 Days</button>
+                <button onclick="changeTimeFilter('30days', this)" class="time-filter-btn text-[11px] font-bold py-2 rounded-lg text-zinc-400 hover:text-white transition-all">30 Days</button>
+                <button onclick="changeTimeFilter('all', this)" class="time-filter-btn text-[11px] font-bold py-2 rounded-lg text-zinc-400 hover:text-white transition-all">All</button>
+            </div>
+
+            <!-- Type Filter Menu -->
+            <div class="grid grid-cols-3 gap-1.5 mb-4 bg-[#121214] p-1 rounded-xl border border-zinc-800/60">
+                <button onclick="changeTypeFilter('all_types', this)" class="type-filter-btn text-[11px] font-bold py-2 rounded-lg bg-[#00ffcc] text-[#09090b] transition-all">All Types</button>
+                <button onclick="changeTypeFilter('Reload', this)" class="type-filter-btn text-[11px] font-bold py-2 rounded-lg text-zinc-400 hover:text-white transition-all flex items-center justify-center gap-1">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Reload
+                </button>
+                <button onclick="changeTypeFilter('Drop', this)" class="type-filter-btn text-[11px] font-bold py-2 rounded-lg text-zinc-400 hover:text-white transition-all flex items-center justify-center gap-1">
+                    <i data-lucide="gift" class="w-3.5 h-3.5"></i> Drops
                 </button>
             </div>
 
-            <!-- Add Account Form Inputs -->
+            <!-- Dashboard Stats Widget -->
+            <div class="bg-[#121214] border border-zinc-800/80 rounded-2xl overflow-hidden mb-4 relative">
+                <!-- Glowing Green Strip -->
+                <div class="h-1 bg-[#00ffcc] w-20 mx-auto rounded-full"></div>
+                <div class="p-6 text-center">
+                    <p class="text-[10px] text-zinc-500 font-bold tracking-widest uppercase mb-1">Total Earned</p>
+                    <p id="stats-success-count" class="text-xs text-zinc-400"><span class="text-zinc-200 font-bold">0</span> successful claims</p>
+                </div>
+            </div>
+
+            <!-- Filtered Claims Stream -->
+            <div id="logs-container" class="space-y-2 max-h-[300px] overflow-y-auto no-scrollbar">
+                <p class="text-xs text-zinc-500 text-center py-6">No claims in this period.</p>
+            </div>
+        </div>
+
+        <!-- TAB 2: MULTI-CASINO ACCOUNTS MANAGER -->
+        <div id="tab-accounts" class="tab-content hidden">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase">My Accounts</h2>
+                <button onclick="toggleAddAccountForm()" class="bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 uppercase tracking-wider">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add
+                </button>
+            </div>
+
+            <!-- Form Supporting 6 Casinos -->
             <div id="add-account-form" class="bg-[#121214] border border-zinc-800 p-4 rounded-xl mb-4 hidden">
-                <h3 class="text-xs font-bold text-zinc-200 mb-3 uppercase tracking-wider">Register Target Account</h3>
+                <h3 class="text-xs font-bold text-zinc-200 mb-3 uppercase tracking-wider">Link Credentials</h3>
                 <div class="space-y-3">
                     <div>
-                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Target Platform</label>
+                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Select Casino</label>
                         <select id="acc-platform" class="w-full bg-[#09090b] border border-zinc-800 text-zinc-300 p-2.5 rounded-lg text-xs outline-none">
                             <option value="Stake.com">Stake.com</option>
                             <option value="Shuffle.com">Shuffle.com</option>
+                            <option value="Rollbit.com">Rollbit.com</option>
+                            <option value="Roobet.com">Roobet.com</option>
+                            <option value="BC.Game">BC.Game</option>
+                            <option value="Duelbits.com">Duelbits.com</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Username / Account Label</label>
-                        <input id="acc-username" type="text" placeholder="e.g. PlayerOne" class="w-full bg-[#09090b] border border-zinc-800 text-white px-3 py-2.5 rounded-lg text-xs outline-none focus:border-violet-600">
+                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Account Label</label>
+                        <input id="acc-username" type="text" placeholder="e.g. Neoroki" class="w-full bg-[#09090b] border border-zinc-800 text-white px-3 py-2.5 rounded-lg text-xs outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Authorization Cookie / Token</label>
-                        <input id="acc-token" type="password" placeholder="Paste account session identifier" class="w-full bg-[#09090b] border border-zinc-800 text-white px-3 py-2.5 rounded-lg text-xs outline-none focus:border-violet-600 font-mono">
+                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Session Cookie / Token</label>
+                        <input id="acc-token" type="password" placeholder="Enter authorization credential" class="w-full bg-[#09090b] border border-zinc-800 text-white px-3 py-2.5 rounded-lg text-xs outline-none">
                     </div>
-                    <button onclick="submitNewAccount()" class="w-full bg-violet-600 hover:bg-violet-500 text-white font-bold py-2.5 rounded-lg text-xs tracking-wider uppercase transition-all">
-                        Link Account
-                    </button>
+                    <button onclick="submitNewAccount()" class="w-full bg-violet-600 hover:bg-violet-500 text-white font-bold py-2.5 rounded-lg text-xs tracking-wider uppercase">Save Connection</button>
                 </div>
             </div>
 
@@ -81,69 +114,47 @@
             </div>
         </div>
 
-        <!-- TAB 2: PRICING PLANS -->
+        <!-- TAB 3: BUY TABS -->
         <div id="tab-subscribe" class="tab-content hidden">
-            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">Pricing Plans</h2>
-            <p class="text-xs text-zinc-500 mb-4">Extend your server-side claim validity duration.</p>
-            
+            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">Pricing</h2>
             <div class="space-y-3">
-                <div onclick="requestCheckout('Basic Subscription', 35.00)" class="bg-[#121214] border border-zinc-800 hover:border-violet-600 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
+                <div onclick="requestCheckout('Basic', 35)" class="bg-[#121214] border border-zinc-800 p-4 rounded-xl flex justify-between items-center cursor-pointer">
                     <div>
-                        <p class="text-xs font-bold text-zinc-200">Basic Tier</p>
-                        <p class="text-[10px] text-zinc-500">30 days claiming node access</p>
+                        <p class="text-xs font-bold text-zinc-200">Basic Plan</p>
+                        <p class="text-[10px] text-zinc-500">30 days automation</p>
                     </div>
                     <span class="text-sm font-bold text-violet-400">$35.00</span>
                 </div>
-                <div onclick="requestCheckout('Pro Subscription', 90.00)" class="bg-[#121214] border border-zinc-800 hover:border-violet-600 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all">
-                    <div>
-                        <p class="text-xs font-bold text-zinc-200">Pro Tier</p>
-                        <p class="text-[10px] text-zinc-500">90 days claiming node access</p>
-                    </div>
-                    <span class="text-sm font-bold text-violet-400">$90.00</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 3: SYSTEM CLAIM LOGS -->
-        <div id="tab-logs" class="tab-content hidden">
-            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">Active Claim Logs</h2>
-            <p class="text-xs text-zinc-500 mb-4">View actual, server-logged claim status for your linked accounts.</p>
-            
-            <div id="logs-container" class="bg-[#121214] border border-zinc-800/80 rounded-xl p-3 font-mono text-[10px] text-zinc-400 space-y-2.5">
-                <p class="text-zinc-500 text-center py-6">No historical records saved.</p>
             </div>
         </div>
 
         <!-- TAB 4: PREFERENCES -->
         <div id="tab-settings" class="tab-content hidden">
-            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">Preferences</h2>
-            <p class="text-xs text-zinc-500 mb-4 font-mono">UID: <span id="my-tg-id" class="text-zinc-300">Pending</span></p>
-            
-            <div class="bg-[#121214] border border-zinc-800/80 p-4 rounded-xl space-y-3">
-                <div class="flex justify-between items-center text-xs">
-                    <span class="text-zinc-400">License Status</span>
-                    <span id="my-license-expiry" class="font-bold text-yellow-500">Retrieving status...</span>
-                </div>
+            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-2">Prefs</h2>
+            <div class="bg-[#121214] p-4 rounded-xl text-xs space-y-3">
+                <div class="flex justify-between"><span>User ID</span><span id="my-tg-id" class="font-mono">Pending</span></div>
+                <div class="flex justify-between border-t border-zinc-800 pt-3"><span>License Expiry</span><span id="my-license-expiry" class="text-yellow-500">Pending</span></div>
             </div>
         </div>
+
     </main>
 
-    <!-- Floating Navigation pill -->
+    <!-- Floating Pill Navigation -->
     <div class="fixed bottom-3 left-3 right-3 bg-[#121214]/95 backdrop-blur-md border border-zinc-800/80 rounded-2xl shadow-xl py-2 px-1">
         <nav class="flex items-center justify-around">
-            <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-violet-400" onclick="switchTab('accounts', this)">
+            <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-slate-500" onclick="switchTab('accounts', this)">
                 <i data-lucide="users" class="w-4 h-4"></i>
                 <span class="text-[9px] font-bold uppercase tracking-wider">Accounts</span>
             </button>
-            <button id="sub-btn-nav" class="nav-btn flex flex-col items-center gap-1 flex-1 text-zinc-500" onclick="switchTab('subscribe', this)">
+            <button id="sub-btn-nav" class="nav-btn flex flex-col items-center gap-1 flex-1 text-slate-500" onclick="switchTab('subscribe', this)">
                 <i data-lucide="shopping-cart" class="w-4 h-4"></i>
                 <span class="text-[9px] font-bold uppercase tracking-wider">Buy</span>
             </button>
-            <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-zinc-500" onclick="switchTab('logs', this)">
-                <i data-lucide="terminal" class="w-4 h-4"></i>
+            <button id="dashboard-btn-nav" class="nav-btn flex flex-col items-center gap-1 flex-1 text-[#00ffcc]" onclick="switchTab('logs', this)">
+                <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
                 <span class="text-[9px] font-bold uppercase tracking-wider">Logs</span>
             </button>
-            <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-zinc-500" onclick="switchTab('settings', this)">
+            <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-slate-500" onclick="switchTab('settings', this)">
                 <i data-lucide="sliders" class="w-4 h-4"></i>
                 <span class="text-[9px] font-bold uppercase tracking-wider">Prefs</span>
             </button>
@@ -154,9 +165,7 @@
         lucide.createIcons();
         const tg = window.Telegram?.WebApp;
         
-        // Define your active public tunnel address:
-const API_SERVER = "https://affluent-diary-sulphuric.ngrok-free.dev";
-        
+        const API_SERVER = "https://affluent-diary-sulphuric.ngrok-free.dev"; // Your active ngrok
         let telegramUserId = 123456789;
 
         if (tg) {
@@ -171,11 +180,14 @@ const API_SERVER = "https://affluent-diary-sulphuric.ngrok-free.dev";
         }
         document.getElementById('my-tg-id').innerText = telegramUserId;
 
+        let globalClaimsLogs = []; // Stores loaded log references
+        let activeTimeFilter = 'today';
+        let activeTypeFilter = 'all_types';
+
         function toggleAddAccountForm() {
             document.getElementById('add-account-form').classList.toggle('hidden');
         }
 
-        // Fetch user context dynamically
         async function loadUserInfo() {
             try {
                 const response = await fetch(`${API_SERVER}/get_user_info`, {
@@ -186,11 +198,13 @@ const API_SERVER = "https://affluent-diary-sulphuric.ngrok-free.dev";
                 if (response.ok) {
                     const data = await response.json();
                     document.getElementById('my-license-expiry').innerText = data.expiry_date;
+                    
                     renderAccounts(data.accounts);
-                    renderLogs(data.logs);
+                    globalClaimsLogs = data.logs || [];
+                    processAndFilterLogs();
                 }
             } catch (err) {
-                console.error("Backend unreachable: ", err);
+                console.error("Backend offline: ", err);
             }
         }
 
@@ -199,10 +213,7 @@ const API_SERVER = "https://affluent-diary-sulphuric.ngrok-free.dev";
             container.innerHTML = "";
 
             if (!accounts || accounts.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-[#121214] border border-zinc-800/80 rounded-xl p-6 text-center">
-                        <p class="text-xs text-zinc-500">No automated credentials registered yet.</p>
-                    </div>`;
+                container.innerHTML = `<div class="bg-[#121214] border border-zinc-800/80 rounded-xl p-6 text-center"><p class="text-xs text-zinc-500">No automated credentials registered yet.</p></div>`;
                 return;
             }
 
@@ -211,37 +222,83 @@ const API_SERVER = "https://affluent-diary-sulphuric.ngrok-free.dev";
                 card.className = "bg-[#121214] border border-zinc-800/80 rounded-xl p-3.5 flex justify-between items-center";
                 card.innerHTML = `
                     <div class="flex flex-col">
-                        <span class="text-[9px] uppercase tracking-wider font-bold text-violet-400">${acc.platform}</span>
+                        <span class="text-[9px] uppercase tracking-wider font-bold text-[#00ffcc]">${acc.platform}</span>
                         <span class="text-xs font-bold text-zinc-200 mt-0.5">${acc.username}</span>
                     </div>
-                    <button onclick="deleteAccount(${acc.id})" class="text-zinc-500 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-950/20 transition-all">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
+                    <button onclick="deleteAccount(${acc.id})" class="text-zinc-500 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-950/20"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 `;
                 container.appendChild(card);
             });
             lucide.createIcons();
         }
 
-        function renderLogs(logs) {
+        // Handles active dynamic client-side filtering (Matches Screenshot filters)
+        function changeTimeFilter(timeId, element) {
+            document.querySelectorAll('.time-filter-btn').forEach(btn => {
+                btn.className = "time-filter-btn text-[11px] font-bold py-2 rounded-lg text-zinc-400 hover:text-white transition-all";
+            });
+            element.className = "time-filter-btn text-[11px] font-bold py-2 rounded-lg bg-[#00ffcc] text-[#09090b] transition-all";
+            activeTimeFilter = timeId;
+            processAndFilterLogs();
+        }
+
+        function changeTypeFilter(typeId, element) {
+            document.querySelectorAll('.type-filter-btn').forEach(btn => {
+                btn.className = "type-filter-btn text-[11px] font-bold py-2 rounded-lg text-zinc-400 hover:text-white transition-all flex items-center justify-center gap-1";
+            });
+            element.className = "type-filter-btn text-[11px] font-bold py-2 rounded-lg bg-[#00ffcc] text-[#09090b] transition-all flex items-center justify-center gap-1";
+            activeTypeFilter = typeId;
+            processAndFilterLogs();
+        }
+
+        function processAndFilterLogs() {
             const container = document.getElementById('logs-container');
             container.innerHTML = "";
 
-            if (!logs || logs.length === 0) {
-                container.innerHTML = `<p class="text-zinc-500 text-center py-6">No historical records logged yet.</p>`;
+            const now = new Date();
+            
+            // Filter by date
+            let filtered = globalClaimsLogs.filter(log => {
+                const logDate = new Date(log.timestamp.replace(" ", "T"));
+                const diffTime = Math.abs(now - logDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (activeTimeFilter === 'today') {
+                    return logDate.toDateString() === now.toDateString();
+                } else if (activeTimeFilter === '7days') {
+                    return diffDays <= 7;
+                } else if (activeTimeFilter === '30days') {
+                    return diffDays <= 30;
+                }
+                return true; // "all"
+            });
+
+            // Filter by type
+            if (activeTypeFilter !== 'all_types') {
+                filtered = filtered.filter(log => log.claim_type === activeTypeFilter);
+            }
+
+            // Calculate Successful claims count
+            const successCount = filtered.filter(log => log.status === "Success").length;
+            document.getElementById('stats-success-count').innerHTML = `<span class="text-zinc-200 font-bold">${successCount}</span> successful claims`;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<p class="text-xs text-zinc-500 text-center py-6">No claims in this period.</p>`;
                 return;
             }
 
-            logs.forEach(log => {
-                const logElement = document.createElement('p');
-                const timeStr = log.timestamp.split(" ")[1] || log.timestamp;
-                
-                let textClass = "text-zinc-400";
-                if (log.status.includes("Success")) textClass = "text-emerald-500 font-bold";
-                else if (log.status.includes("Expired") || log.status.includes("Failed")) textClass = "text-rose-500";
-
-                logElement.innerHTML = `<span class="text-zinc-600">[${timeStr}]</span> ${log.platform}: Code <span class="text-violet-400 font-bold">${log.code}</span> -> <span class="${textClass}">${log.status}</span>`;
-                container.appendChild(logElement);
+            // Render matching logs
+            filtered.forEach(log => {
+                const row = document.createElement('div');
+                row.className = "bg-[#121214] border border-zinc-800/80 p-3 rounded-xl flex justify-between items-center";
+                row.innerHTML = `
+                    <div>
+                        <span class="text-[9px] uppercase tracking-wider font-bold text-zinc-500">${log.platform} • ${log.claim_type}</span>
+                        <p class="text-xs font-bold text-zinc-300 mt-0.5">Code: ${log.code}</p>
+                    </div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider ${log.status === 'Success' ? 'text-emerald-400' : 'text-rose-500'}">${log.status}</span>
+                `;
+                container.appendChild(row);
             });
         }
 
@@ -250,21 +307,13 @@ const API_SERVER = "https://affluent-diary-sulphuric.ngrok-free.dev";
             const username = document.getElementById('acc-username').value;
             const token = document.getElementById('acc-token').value;
 
-            if (!username || !token) {
-                if (tg) tg.showAlert("Please fill out all credential inputs.");
-                return;
-            }
+            if (!username || !token) return;
 
             try {
                 const response = await fetch(`${API_SERVER}/accounts/add`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        telegram_id: telegramUserId,
-                        platform: platform,
-                        username: username,
-                        auth_token: token
-                    })
+                    body: JSON.stringify({ telegram_id: telegramUserId, platform, username, auth_token: token })
                 });
                 if (response.ok) {
                     document.getElementById('acc-username').value = "";
@@ -272,9 +321,7 @@ const API_SERVER = "https://affluent-diary-sulphuric.ngrok-free.dev";
                     toggleAddAccountForm();
                     loadUserInfo();
                 }
-            } catch (err) {
-                console.error("Register call failed: ", err);
-            }
+            } catch (err) { console.error(err); }
         }
 
         async function deleteAccount(accountId) {
@@ -284,15 +331,10 @@ const API_SERVER = "https://affluent-diary-sulphuric.ngrok-free.dev";
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ account_id: accountId, telegram_id: telegramUserId })
                 });
-                if (response.ok) {
-                    loadUserInfo();
-                }
-            } catch (err) {
-                console.error("Delete call failed: ", err);
-            }
+                if (response.ok) loadUserInfo();
+            } catch (err) { console.error(err); }
         }
 
-        // ================= SECURE GATEWAY INVOICE CALL =================
         async function requestCheckout(planName, amount) {
             try {
                 const response = await fetch(`${API_SERVER}/payments/create-invoice`, {
@@ -302,17 +344,10 @@ const API_SERVER = "https://affluent-diary-sulphuric.ngrok-free.dev";
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    const checkoutUrl = data.checkout_url;
-                    // Automatically direct the client to execute the secure checkout process
-                    if (tg) {
-                        tg.openLink(checkoutUrl);
-                    } else {
-                        window.open(checkoutUrl, '_blank');
-                    }
+                    if (tg) tg.openLink(data.checkout_url);
+                    else window.open(data.checkout_url, '_blank');
                 }
-            } catch (err) {
-                console.error("Payment initialization failed: ", err);
-            }
+            } catch (err) { console.error(err); }
         }
 
         function switchTab(tabId, buttonElement) {
@@ -320,16 +355,11 @@ const API_SERVER = "https://affluent-diary-sulphuric.ngrok-free.dev";
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-violet-400');
-                btn.classList.add('text-zinc-500');
+                btn.className = "nav-btn flex flex-col items-center gap-1 flex-1 text-slate-500";
             });
-            buttonElement.classList.add('text-violet-400');
-            buttonElement.classList.remove('text-zinc-500');
+            buttonElement.className = `nav-btn flex flex-col items-center gap-1 flex-1 ${tabId === 'logs' ? 'text-[#00ffcc]' : 'text-violet-400'}`;
             
-            // Reload logs when clicking Logs tab
-            if (tabId === 'logs' || tabId === 'accounts') {
-                loadUserInfo();
-            }
+            if (tabId === 'logs' || tabId === 'accounts') loadUserInfo();
         }
 
         loadUserInfo();
