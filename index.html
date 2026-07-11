@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SCC API Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-[#0b0f19] text-white min-h-screen flex flex-col justify-between select-none pb-20">
+
+    <!-- Header Section -->
+    <header class="flex items-center justify-between p-4 bg-[#0e1424] border-b border-[#18233c]">
+        <div class="flex items-center gap-3">
+            <div id="user-avatar" class="w-9 h-9 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-sm">
+                P
+            </div>
+            <div>
+                <h1 id="user-name" class="font-bold text-sm text-slate-100">Polham</h1>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="text-xs bg-[#16223f] border border-[#23355c] px-2 py-1 rounded text-slate-300 font-mono font-bold">GB EN</span>
+            <button class="text-slate-400 hover:text-white" onclick="closeApp()">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Content Sections -->
+    <main class="flex-1 p-4 overflow-y-auto">
+
+        <!-- Interactive Slots Available Banner -->
+        <div class="bg-[#0e1f24] border border-[#1b3e3e] rounded-lg p-3 flex items-center gap-2 mb-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#00ffcc] animate-pulse"></span>
+            <p class="text-xs text-[#00ffcc] font-semibold">69 slots available.</p>
+        </div>
+
+        <!-- System Notification Banner -->
+        <div class="bg-[#111a30] border border-[#1c2c4f] rounded-lg p-3 flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <i data-lucide="bell" class="w-5 h-5 text-yellow-400"></i>
+                <div>
+                    <h4 class="text-xs font-bold text-slate-200">Enable Notifications</h4>
+                    <p class="text-[10px] text-slate-400">Send /start to @CodeClaimerUserCheckBot</p>
+                </div>
+            </div>
+            <button class="text-slate-400 hover:text-white" onclick="this.parentElement.remove()">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <!-- 1. ACCOUNTS VIEW -->
+        <div id="tab-accounts" class="tab-content">
+            <h2 class="text-base font-bold text-slate-200 mb-4">My Accounts</h2>
+
+            <div class="flex flex-col items-center justify-center py-6">
+                <div class="w-16 h-16 rounded-full bg-[#16223f] flex items-center justify-center mb-4">
+                    <i data-lucide="lock" class="w-8 h-8 text-[#00ffd5]"></i>
+                </div>
+                <h3 class="font-bold text-sm text-slate-200 mb-1">No subscriptions yet</h3>
+                <p class="text-xs text-slate-400 text-center mb-6 max-w-[250px]">Automate your drop claims with one of our plans</p>
+
+                <!-- Plan Matrix -->
+                <div class="grid grid-cols-4 gap-2 w-full mb-6">
+                    <button onclick="selectTier(30)" class="bg-[#111a30] border border-[#1c2c4f] rounded-lg p-2 text-center flex flex-col justify-between h-20 hover:border-[#00ffd5] transition-all">
+                        <span class="text-[10px] text-slate-400 font-semibold">7 Days</span>
+                        <span class="text-sm font-bold text-[#00ffd5]">$30</span>
+                    </button>
+                    <button onclick="selectTier(50)" class="bg-[#111a30] border border-[#1c2c4f] rounded-lg p-2 text-center flex flex-col justify-between h-20 hover:border-[#00ffd5] transition-all">
+                        <span class="text-[10px] text-slate-400 font-semibold">14 Days</span>
+                        <span class="text-sm font-bold text-[#00ffd5]">$50</span>
+                    </button>
+                    <button onclick="selectTier(90)" class="bg-[#111a30] border-2 border-[#00ffd5] rounded-lg p-2 text-center flex flex-col justify-between h-20 relative bg-[#13223f]">
+                        <span class="absolute -top-1.5 right-1 text-[8px] bg-yellow-500 text-slate-900 font-extrabold px-1 rounded">⭐</span>
+                        <span class="text-[10px] text-slate-300 font-semibold">30 Days</span>
+                        <span class="text-sm font-bold text-[#00ffd5]">$90</span>
+                    </button>
+                    <button onclick="selectTier(240)" class="bg-[#111a30] border border-[#1c2c4f] rounded-lg p-2 text-center flex flex-col justify-between h-20 hover:border-[#00ffd5] transition-all">
+                        <span class="text-[10px] text-slate-400 font-semibold">90 Days</span>
+                        <span class="text-sm font-bold text-[#00ffd5]">$240</span>
+                    </button>
+                </div>
+
+                <button onclick="switchTab('buy', document.getElementById('buy-btn-nav'))" class="w-full bg-gradient-to-r from-cyan-500 to-[#00ffd5] text-slate-950 font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all">
+                    <i data-lucide="plus" class="w-5 h-5 stroke-[3]"></i>
+                    <span>Get Started</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. BUY VIEW -->
+        <div id="tab-buy" class="tab-content hidden">
+            <h2 class="text-base font-bold text-slate-200 mb-2">Subscribe</h2>
+            <p class="text-xs text-slate-400 mb-6">Select a membership package to update your server access.</p>
+            <div class="bg-[#111a30] border border-[#1c2c4f] rounded-xl p-4 text-center">
+                <p class="text-sm font-semibold mb-2">Monthly Tier Access</p>
+                <p class="text-2xl font-bold text-[#00ffd5] mb-4">$90 / 30 Days</p>
+                <p class="text-xs text-slate-400 mb-6">Automate your server check cycles instantly after purchase.</p>
+                <button onclick="simulatePurchase()" class="w-full bg-[#00ffd5] text-slate-950 font-bold py-3 rounded-lg">Buy Subscription</button>
+            </div>
+        </div>
+
+        <!-- 3. MANAGE VIEW (Dynamic API integration) -->
+        <div id="tab-manage" class="tab-content hidden">
+            <h2 class="text-base font-bold text-slate-200 mb-2">Manage Settings</h2>
+            <p class="text-xs text-slate-400 mb-6">Update credentials or view key associations.</p>
+
+            <div class="bg-[#111a30] border border-[#1c2c4f] rounded-xl p-4 mb-4">
+                <label class="block text-xs font-semibold text-slate-400 mb-2">My Current Server License</label>
+                <input id="my-license-key" type="text" readonly value="LKEY-LOADING..." class="w-full bg-[#0c1322] border border-[#1d2d4f] text-slate-300 px-3 py-2.5 rounded-lg text-sm select-all">
+            </div>
+
+            <div class="bg-[#111a30] border border-[#1c2c4f] rounded-xl p-4">
+                <label class="block text-xs font-semibold text-slate-400 mb-2">Change API Key</label>
+                <input id="user-api-input" type="password" placeholder="Enter your active API key" class="w-full bg-[#0c1322] border border-[#1d2d4f] text-white px-3 py-2.5 rounded-lg text-sm mb-4 outline-none focus:border-[#00ffd5]">
+                <button onclick="saveApiKey()" class="w-full bg-gradient-to-r from-cyan-500 to-[#00ffd5] text-slate-950 font-bold py-3 rounded-lg text-sm">Save Changes</button>
+            </div>
+        </div>
+
+        <!-- 4. STATS VIEW -->
+        <div id="tab-stats" class="tab-content hidden">
+            <h2 class="text-base font-bold text-slate-200 mb-2">Live Performance Stats</h2>
+            <p class="text-xs text-slate-400 mb-6">Performance reports from your active server cluster.</p>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-[#111a30] border border-[#1c2c4f] p-4 rounded-xl text-center">
+                    <p class="text-xs text-slate-400 mb-1">Server Latency</p>
+                    <p class="text-xl font-bold text-[#00ffd5]">48 ms</p>
+                </div>
+                <div class="bg-[#111a30] border border-[#1c2c4f] p-4 rounded-xl text-center">
+                    <p class="text-xs text-slate-400 mb-1">Claim Success Rate</p>
+                    <p class="text-xl font-bold text-[#00ffd5]">99.8%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. SETTINGS VIEW -->
+        <div id="tab-settings" class="tab-content hidden">
+            <h2 class="text-base font-bold text-slate-200 mb-2">User Settings</h2>
+            <p class="text-xs text-slate-400 mb-6 font-semibold">User ID: <span id="my-tg-id" class="text-slate-200">Pending...</span></p>
+
+            <div class="bg-[#111a30] border border-[#1c2c4f] p-4 rounded-xl mb-4">
+                <p class="text-xs text-slate-400 mb-2">License Expiration Date</p>
+                <p id="my-license-expiry" class="text-sm font-bold text-yellow-400">Loading expiration date...</p>
+            </div>
+
+            <button class="w-full border border-[#ef4444] text-[#ef4444] hover:bg-[#ef4444]/10 font-bold py-3 rounded-lg text-sm">Log Out Session</button>
+        </div>
+    </main>
+
+    <!-- Bottom Menu Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-[#0e1424] border-t border-[#18233c] flex items-center justify-around py-3">
+        <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-[#00ffd5]" onclick="switchTab('accounts', this)">
+            <i data-lucide="users" class="w-5 h-5"></i>
+            <span class="text-[9px] font-semibold">Accounts</span>
+        </button>
+        <button id="buy-btn-nav" class="nav-btn flex flex-col items-center gap-1 flex-1 text-slate-500" onclick="switchTab('buy', this)">
+            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+            <span class="text-[9px] font-semibold">Buy</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-slate-500" onclick="switchTab('manage', this)">
+            <i data-lucide="sliders" class="w-5 h-5"></i>
+            <span class="text-[9px] font-semibold">Manage</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-slate-500" onclick="switchTab('stats', this)">
+            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+            <span class="text-[9px] font-semibold">Stats</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-slate-500" onclick="switchTab('settings', this)">
+            <i data-lucide="settings" class="w-5 h-5"></i>
+            <span class="text-[9px] font-semibold">Settings</span>
+        </button>
+    </nav>
+
+    <script>
+        lucide.createIcons();
+        const tg = window.Telegram?.WebApp;
+
+        // Define your active FastAPI server address here:
+        const API_SERVER = "http://127.0.0.1:8000";
+
+        let telegramUserId = 123456789; // Default sandbox ID for external browsers
+
+        if (tg) {
+            tg.expand();
+            tg.ready();
+            const user = tg.initDataUnsafe?.user;
+            if (user) {
+                telegramUserId = user.id;
+                document.getElementById('user-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+                document.getElementById('user-avatar').innerText = user.first_name.charAt(0).toUpperCase();
+            }
+        }
+        document.getElementById('my-tg-id').innerText = telegramUserId;
+
+        // Fetch User Info from Async DB via FastAPI on Startup
+        async function loadUserInfo() {
+            try {
+                const response = await fetch(`${API_SERVER}/get_user_info`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ telegram_id: telegramUserId })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('my-license-key').value = data.license_key;
+                    document.getElementById('my-license-expiry').innerText = data.expiry_date;
+                    document.getElementById('user-api-input').value = data.api_key;
+                }
+            } catch (err) {
+                console.error("Error connecting to backend API: ", err);
+            }
+        }
+
+        // Save Custom API Key using non-blocking API endpoint
+        async function saveApiKey() {
+            const apiKey = document.getElementById('user-api-input').value;
+            try {
+                const response = await fetch(`${API_SERVER}/update_api`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ telegram_id: telegramUserId, api_key: apiKey })
+                });
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    if (tg) tg.showAlert("API Key securely saved to the database!");
+                    else alert("API Key successfully saved!");
+                } else {
+                    if (tg) tg.showAlert(result.detail || "Failed to update API key.");
+                }
+            } catch (err) {
+                console.error("Connection failed: ", err);
+            }
+        }
+
+        function simulatePurchase() {
+            if (tg) tg.showAlert("Please buy your subscription via the main Telegram Bot using /buy.");
+            else alert("Please buy subscription via /buy in bot.");
+        }
+
+        function selectTier(price) {
+            switchTab('buy', document.getElementById('buy-btn-nav'));
+        }
+
+        function switchTab(tabId, buttonElement) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-[#00ffd5]');
+                btn.classList.add('text-slate-500');
+            });
+            buttonElement.classList.add('text-[#00ffd5]');
+            buttonElement.classList.remove('text-slate-500');
+        }
+
+        function closeApp() {
+            if (tg) tg.close();
+        }
+
+        // Initialize User Loading
+        loadUserInfo();
+    </script>
+</body>
+</html>
