@@ -27,7 +27,7 @@
 </head>
 <body class="bg-[#07070a] text-zinc-100 min-h-screen flex flex-col justify-between pb-28 select-none">
 
-    <!-- Header -->
+    <!-- Top Navigation Bar -->
     <header class="flex items-center justify-between p-4 bg-[#0d0e12] border-b border-zinc-800/60 sticky top-0 z-50">
         <div class="flex items-center gap-3">
             <div id="user-avatar" class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 text-white flex items-center justify-center font-bold text-sm tracking-wider shadow-lg shadow-indigo-500/20">
@@ -41,7 +41,7 @@
         <span class="text-[10px] bg-zinc-800/80 border border-zinc-700/60 px-2 py-1 rounded text-zinc-400 font-mono tracking-widest uppercase">v2.4.0</span>
     </header>
 
-    <!-- Content Panel -->
+    <!-- Main Content Panel -->
     <main class="flex-1 p-4 overflow-y-auto pb-24">
 
         <!-- TAB 1: PREMIUM CLAIM DASHBOARD -->
@@ -51,7 +51,7 @@
                 <h2 class="text-xs font-bold uppercase text-zinc-400 tracking-widest">Claim Dashboard</h2>
             </div>
 
-            <!-- Time Filter Row -->
+            <!-- Sleek Time Filter Row -->
             <div class="grid grid-cols-4 gap-1.5 mb-3 bg-[#0d0e12] p-1 rounded-xl border border-zinc-800/40">
                 <button onclick="changeTimeFilter('today', this)" class="time-filter-btn text-[11px] font-bold py-2 rounded-lg bg-[#00ffcc] text-[#07070a] shadow-lg shadow-[#00ffcc]/10 transition-all">Today</button>
                 <button onclick="changeTimeFilter('7days', this)" class="time-filter-btn text-[11px] font-bold py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/30 transition-all">7 Days</button>
@@ -59,7 +59,7 @@
                 <button onclick="changeTimeFilter('all', this)" class="time-filter-btn text-[11px] font-bold py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/30 transition-all">All</button>
             </div>
 
-            <!-- Type Filter Row -->
+            <!-- Sleek Type Filter Row -->
             <div class="grid grid-cols-3 gap-1.5 mb-5 bg-[#0d0e12] p-1 rounded-xl border border-zinc-800/40">
                 <button onclick="changeTypeFilter('all_types', this)" class="type-filter-btn text-[11px] font-bold py-2 rounded-lg bg-[#00ffcc] text-[#07070a] shadow-lg shadow-[#00ffcc]/10 transition-all flex items-center justify-center gap-1">All Types</button>
                 <button onclick="changeTypeFilter('Reload', this)" class="type-filter-btn text-[11px] font-bold py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/30 transition-all flex items-center justify-center gap-1">
@@ -97,7 +97,7 @@
                 </button>
             </div>
 
-            <!-- Input Form -->
+            <!-- Form Supporting the 6 Requested Casinos -->
             <div id="add-account-form" class="bg-[#0d0e12] border border-zinc-800 p-4 rounded-xl mb-4 hidden shadow-2xl">
                 <h3 class="text-xs font-bold text-zinc-200 mb-3 uppercase tracking-wider">Configure Terminal</h3>
                 <div class="space-y-3">
@@ -154,6 +154,18 @@
 
             <!-- Dynamic Settings Container (Populates for each linked account) -->
             <div id="settings-container" class="space-y-4"></div>
+
+            <!-- RESTORED: Profile Info Block (Resolves Javascript Crash) -->
+            <div class="mt-6 bg-[#0d0e12] border border-zinc-800/60 p-4 rounded-xl text-xs space-y-3 shadow-md">
+                <div class="flex justify-between items-center">
+                    <span class="text-zinc-500 uppercase tracking-wider text-[10px]">Telegram ID</span>
+                    <span id="my-tg-id" class="font-mono text-zinc-200 text-sm">Pending</span>
+                </div>
+                <div class="flex justify-between items-center border-t border-zinc-800/60 pt-3">
+                    <span class="text-zinc-500 uppercase tracking-wider text-[10px]">License Expiration</span>
+                    <span id="my-license-expiry" class="font-bold text-yellow-500 font-sans">Checking...</span>
+                </div>
+            </div>
         </div>
 
     </main>
@@ -197,7 +209,12 @@
                 document.getElementById('user-avatar').innerText = user.first_name.charAt(0).toUpperCase();
             }
         }
-        document.getElementById('my-tg-id').innerText = telegramUserId;
+        
+        // Resolves the bottom load check (Line 200)
+        const tgIdEl = document.getElementById('my-tg-id');
+        if (tgIdEl) {
+            tgIdEl.innerText = telegramUserId;
+        }
 
         let globalClaimsLogs = []; 
         let globalAccounts = [];
@@ -220,7 +237,12 @@
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    document.getElementById('my-license-expiry').innerText = data.expiry_date;
+                    
+                    // Resolves the API response check safely (Line 223)
+                    const expiryEl = document.getElementById('my-license-expiry');
+                    if (expiryEl) {
+                        expiryEl.innerText = data.expiry_date;
+                    }
                     
                     globalAccounts = data.accounts || [];
                     renderAccounts(globalAccounts);
@@ -261,7 +283,6 @@
             lucide.createIcons();
         }
 
-        // Render Settings Tab (Matches Screenshot)
         function renderSettingsPanel(accounts) {
             const loading = document.getElementById('settings-loading');
             const container = document.getElementById('settings-container');
@@ -278,7 +299,6 @@
                 const card = document.createElement('div');
                 card.className = "bg-[#0d0e12] border border-zinc-800/60 rounded-2xl p-4 shadow-md";
                 
-                // Parse allowed days
                 const daysList = acc.claim_days ? acc.claim_days.split(",") : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
                 const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
                 const fullDaysMap = {"Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday", "Thu": "Thursday", "Fri": "Friday", "Sat": "Saturday", "Sun": "Sunday"};
@@ -307,7 +327,6 @@
                         </button>
                     </div>
 
-                    <!-- MINIMUM CLAIM AMOUNT SELECTOR -->
                     <div class="mb-5">
                         <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-2">Claim Minimum Value</label>
                         <select id="min-amount-${acc.id}" class="w-full bg-[#07070a] border border-zinc-800 text-zinc-300 p-2.5 rounded-lg text-xs outline-none">
@@ -321,7 +340,6 @@
                         </select>
                     </div>
 
-                    <!-- ALLOWED DAYS SELECTOR -->
                     <div>
                         <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-2">Claim Days</label>
                         <div class="space-y-1">
@@ -337,7 +355,6 @@
         async function saveAccountSettings(accountId) {
             const minAmount = parseFloat(document.getElementById(`min-amount-${accountId}`).value);
             
-            // Gather checked days
             const dayCheckboxes = document.querySelectorAll(`.day-toggle-${accountId}`);
             const selectedDays = [];
             dayCheckboxes.forEach(cb => {
@@ -457,56 +474,4 @@
                     document.getElementById('acc-username').value = "";
                     document.getElementById('acc-token').value = "";
                     toggleAddAccountForm();
-                    loadUserInfo();
-                }
-            } catch (err) { console.error(err); }
-        }
-
-        async function deleteAccount(accountId) {
-            try {
-                const response = await fetch(`${API_SERVER}/accounts/delete`, {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json",
-                        "ngrok-skip-browser-warning": "69420"
-                    },
-                    body: JSON.stringify({ account_id: accountId, telegram_id: telegramUserId })
-                });
-                if (response.ok) loadUserInfo();
-            } catch (err) { console.error(err); }
-        }
-
-        async function requestCheckout(planName, amount) {
-            try {
-                const response = await fetch(`${API_SERVER}/payments/create-invoice`, {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json",
-                        "ngrok-skip-browser-warning": "69420"
-                    },
-                    body: JSON.stringify({ telegram_id: telegramUserId, amount: amount, plan_name: planName })
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    if (tg) tg.openLink(data.checkout_url);
-                    else window.open(data.checkout_url, '_blank');
-                }
-            } catch (err) { console.error(err); }
-        }
-
-        function switchTab(tabId, buttonElement) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.className = "nav-btn flex flex-col items-center gap-1 flex-1 text-slate-500 transition-all duration-150";
-            });
-            buttonElement.className = `nav-btn flex flex-col items-center gap-1 flex-1 transition-all duration-150 ${tabId === 'logs' ? 'text-[#00ffcc]' : 'text-violet-400'}`;
-            
-            if (tabId === 'logs' || tabId === 'accounts' || tabId === 'settings') loadUserInfo();
-        }
-
-        loadUserInfo();
-    </script>
-</body>
-</html>
+                    lo
