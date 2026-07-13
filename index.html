@@ -27,7 +27,7 @@
 </head>
 <body class="bg-[#07070a] text-zinc-100 min-h-screen flex flex-col justify-between pb-28 select-none">
 
-    <!-- Top Navigation Bar -->
+    <!-- Header -->
     <header class="flex items-center justify-between p-4 bg-[#0d0e12] border-b border-zinc-800/60 sticky top-0 z-50">
         <div class="flex items-center gap-3">
             <div id="user-avatar" class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 text-white flex items-center justify-center font-bold text-sm tracking-wider shadow-lg shadow-indigo-500/20">
@@ -41,7 +41,7 @@
         <span class="text-[10px] bg-zinc-800/80 border border-zinc-700/60 px-2 py-1 rounded text-zinc-400 font-mono tracking-widest uppercase">v2.4.0</span>
     </header>
 
-    <!-- Main Content Panel -->
+    <!-- Content Panel -->
     <main class="flex-1 p-4 overflow-y-auto pb-24">
 
         <!-- TAB 1: PREMIUM CLAIM DASHBOARD -->
@@ -51,7 +51,7 @@
                 <h2 class="text-xs font-bold uppercase text-zinc-400 tracking-widest">Claim Dashboard</h2>
             </div>
 
-            <!-- Sleek Time Filter Row -->
+            <!-- Time Filter Row -->
             <div class="grid grid-cols-4 gap-1.5 mb-3 bg-[#0d0e12] p-1 rounded-xl border border-zinc-800/40">
                 <button onclick="changeTimeFilter('today', this)" class="time-filter-btn text-[11px] font-bold py-2 rounded-lg bg-[#00ffcc] text-[#07070a] shadow-lg shadow-[#00ffcc]/10 transition-all">Today</button>
                 <button onclick="changeTimeFilter('7days', this)" class="time-filter-btn text-[11px] font-bold py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/30 transition-all">7 Days</button>
@@ -59,7 +59,7 @@
                 <button onclick="changeTimeFilter('all', this)" class="time-filter-btn text-[11px] font-bold py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/30 transition-all">All</button>
             </div>
 
-            <!-- Sleek Type Filter Row -->
+            <!-- Type Filter Row -->
             <div class="grid grid-cols-3 gap-1.5 mb-5 bg-[#0d0e12] p-1 rounded-xl border border-zinc-800/40">
                 <button onclick="changeTypeFilter('all_types', this)" class="type-filter-btn text-[11px] font-bold py-2 rounded-lg bg-[#00ffcc] text-[#07070a] shadow-lg shadow-[#00ffcc]/10 transition-all flex items-center justify-center gap-1">All Types</button>
                 <button onclick="changeTypeFilter('Reload', this)" class="type-filter-btn text-[11px] font-bold py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/30 transition-all flex items-center justify-center gap-1">
@@ -97,7 +97,7 @@
                 </button>
             </div>
 
-            <!-- Form Supporting the 6 Requested Casinos -->
+            <!-- Input Form -->
             <div id="add-account-form" class="bg-[#0d0e12] border border-zinc-800 p-4 rounded-xl mb-4 hidden shadow-2xl">
                 <h3 class="text-xs font-bold text-zinc-200 mb-3 uppercase tracking-wider">Configure Terminal</h3>
                 <div class="space-y-3">
@@ -114,7 +114,7 @@
                     </div>
                     <div>
                         <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Username / Label</label>
-                        <input id="acc-username" type="text" placeholder="e.g. Username" class="w-full bg-[#07070a] border border-zinc-800 text-white px-3 py-2.5 rounded-lg text-xs outline-none focus:border-violet-600">
+                        <input id="acc-username" type="text" placeholder="e.g. Neoroki" class="w-full bg-[#07070a] border border-zinc-800 text-white px-3 py-2.5 rounded-lg text-xs outline-none focus:border-violet-600">
                     </div>
                     <div>
                         <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Authorization Session Token</label>
@@ -143,19 +143,17 @@
             </div>
         </div>
 
-        <!-- TAB 4: PREFERENCES -->
+        <!-- TAB 4: ADVANCED SETTINGS PANEL (Matches Screenshot) -->
         <div id="tab-settings" class="tab-content hidden">
-            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-3">Preferences</h2>
-            <div class="bg-[#0d0e12] border border-zinc-800/80 p-4 rounded-xl text-xs space-y-3 shadow-md">
-                <div class="flex justify-between items-center">
-                    <span class="text-zinc-500 uppercase tracking-wider text-[10px]">Telegram ID</span>
-                    <span id="my-tg-id" class="font-mono text-zinc-200 text-sm">Pending</span>
-                </div>
-                <div class="flex justify-between items-center border-t border-zinc-800/60 pt-3">
-                    <span class="text-zinc-500 uppercase tracking-wider text-[10px]">License Expiration</span>
-                    <span id="my-license-expiry" class="font-bold text-yellow-500">Checking...</span>
-                </div>
+            <div class="flex items-center gap-2 mb-4">
+                <div class="w-1.5 h-4 bg-[#00ffcc] rounded-full"></div>
+                <h2 class="text-xs font-bold uppercase text-zinc-400 tracking-widest">Automation Settings</h2>
             </div>
+
+            <div id="settings-loading" class="text-xs text-zinc-500 text-center py-6">Loading linked accounts...</div>
+
+            <!-- Dynamic Settings Container (Populates for each linked account) -->
+            <div id="settings-container" class="space-y-4"></div>
         </div>
 
     </main>
@@ -177,7 +175,7 @@
             </button>
             <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-zinc-500 transition-all duration-150" onclick="switchTab('settings', this)">
                 <i data-lucide="sliders" class="w-4.5 h-4.5"></i>
-                <span class="text-[9px] font-bold uppercase tracking-wider mt-0.5">Prefs</span>
+                <span class="text-[9px] font-bold uppercase tracking-wider mt-0.5">Settings</span>
             </button>
         </nav>
     </div>
@@ -202,6 +200,7 @@
         document.getElementById('my-tg-id').innerText = telegramUserId;
 
         let globalClaimsLogs = []; 
+        let globalAccounts = [];
         let activeTimeFilter = 'today';
         let activeTypeFilter = 'all_types';
 
@@ -223,7 +222,10 @@
                     const data = await response.json();
                     document.getElementById('my-license-expiry').innerText = data.expiry_date;
                     
-                    renderAccounts(data.accounts);
+                    globalAccounts = data.accounts || [];
+                    renderAccounts(globalAccounts);
+                    renderSettingsPanel(globalAccounts);
+                    
                     globalClaimsLogs = data.logs || [];
                     processAndFilterLogs();
                 }
@@ -257,6 +259,117 @@
                 container.appendChild(card);
             });
             lucide.createIcons();
+        }
+
+        // Render Settings Tab (Matches Screenshot)
+        function renderSettingsPanel(accounts) {
+            const loading = document.getElementById('settings-loading');
+            const container = document.getElementById('settings-container');
+            container.innerHTML = "";
+
+            if (!accounts || accounts.length === 0) {
+                loading.innerText = "No linked accounts found. Please link an account first.";
+                loading.classList.remove('hidden');
+                return;
+            }
+            loading.classList.add('hidden');
+
+            accounts.forEach(acc => {
+                const card = document.createElement('div');
+                card.className = "bg-[#0d0e12] border border-zinc-800/60 rounded-2xl p-4 shadow-md";
+                
+                // Parse allowed days
+                const daysList = acc.claim_days ? acc.claim_days.split(",") : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+                const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+                const fullDaysMap = {"Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday", "Thu": "Thursday", "Fri": "Friday", "Sat": "Saturday", "Sun": "Sunday"};
+
+                let daysHTML = "";
+                daysOfWeek.forEach(d => {
+                    const isChecked = daysList.includes(d);
+                    daysHTML += `
+                        <div class="flex justify-between items-center py-2 border-b border-zinc-800/40">
+                            <span class="text-xs text-zinc-400">${fullDaysMap[d]}</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" data-day="${d}" class="sr-only peer day-toggle-${acc.id}" ${isChecked ? 'checked' : ''}>
+                                <div class="w-9 h-5 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-zinc-300 after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#00ffcc]"></div>
+                            </label>
+                        </div>`;
+                });
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-4 pb-2 border-b border-zinc-800">
+                        <div>
+                            <span class="text-[9px] uppercase tracking-wider font-bold text-[#00ffcc]">${acc.platform}</span>
+                            <h3 class="text-sm font-bold text-zinc-200">${acc.username}</h3>
+                        </div>
+                        <button onclick="saveAccountSettings(${acc.id})" class="bg-[#00ffcc] text-[#07070a] text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 uppercase tracking-wider shadow-lg shadow-[#00ffcc]/10">
+                            <i data-lucide="check" class="w-3.5 h-3.5"></i> Save
+                        </button>
+                    </div>
+
+                    <!-- MINIMUM CLAIM AMOUNT SELECTOR -->
+                    <div class="mb-5">
+                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-2">Claim Minimum Value</label>
+                        <select id="min-amount-${acc.id}" class="w-full bg-[#07070a] border border-zinc-800 text-zinc-300 p-2.5 rounded-lg text-xs outline-none">
+                            <option value="0.0" ${acc.min_amount == 0.0 ? 'selected' : ''}>Claim All Codes (No Limit)</option>
+                            <option value="1.0" ${acc.min_amount == 1.0 ? 'selected' : ''}>Claim above $1.00</option>
+                            <option value="2.0" ${acc.min_amount == 2.0 ? 'selected' : ''}>Claim above $2.00</option>
+                            <option value="3.0" ${acc.min_amount == 3.0 ? 'selected' : ''}>Claim above $3.00</option>
+                            <option value="4.0" ${acc.min_amount == 4.0 ? 'selected' : ''}>Claim above $4.00</option>
+                            <option value="5.0" ${acc.min_amount == 5.0 ? 'selected' : ''}>Claim above $5.00</option>
+                            <option value="10.0" ${acc.min_amount == 10.0 ? 'selected' : ''}>Claim above $10.00</option>
+                        </select>
+                    </div>
+
+                    <!-- ALLOWED DAYS SELECTOR -->
+                    <div>
+                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-2">Claim Days</label>
+                        <div class="space-y-1">
+                            ${daysHTML}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        async function saveAccountSettings(accountId) {
+            const minAmount = parseFloat(document.getElementById(`min-amount-${accountId}`).value);
+            
+            // Gather checked days
+            const dayCheckboxes = document.querySelectorAll(`.day-toggle-${accountId}`);
+            const selectedDays = [];
+            dayCheckboxes.forEach(cb => {
+                if (cb.checked) {
+                    selectedDays.push(cb.getAttribute('data-day'));
+                }
+            });
+
+            const daysStr = selectedDays.join(",");
+
+            try {
+                const response = await fetch(`${API_SERVER}/accounts/update_settings`, {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "69420"
+                    },
+                    body: JSON.stringify({
+                        account_id: accountId,
+                        telegram_id: telegramUserId,
+                        min_amount: minAmount,
+                        claim_days: daysStr
+                    })
+                });
+                if (response.ok) {
+                    if (tg) tg.showAlert("Automation filters updated successfully!");
+                    else alert("Settings saved!");
+                    loadUserInfo();
+                }
+            } catch (err) {
+                console.error("Save failed: ", err);
+            }
         }
 
         function changeTimeFilter(timeId, element) {
@@ -390,7 +503,7 @@
             });
             buttonElement.className = `nav-btn flex flex-col items-center gap-1 flex-1 transition-all duration-150 ${tabId === 'logs' ? 'text-[#00ffcc]' : 'text-violet-400'}`;
             
-            if (tabId === 'logs' || tabId === 'accounts') loadUserInfo();
+            if (tabId === 'logs' || tabId === 'accounts' || tabId === 'settings') loadUserInfo();
         }
 
         loadUserInfo();
