@@ -114,7 +114,7 @@
                     </div>
                     <div>
                         <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Username / Label</label>
-                        <input id="acc-username" type="text" placeholder="e.g. Neoroki" class="w-full bg-[#07070a] border border-zinc-800 text-white px-3 py-2.5 rounded-lg text-xs outline-none focus:border-violet-600">
+                        <input id="acc-username" type="text" placeholder="e.g. Username" class="w-full bg-[#07070a] border border-zinc-800 text-white px-3 py-2.5 rounded-lg text-xs outline-none focus:border-violet-600">
                     </div>
                     <div>
                         <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-1">Authorization Session Token</label>
@@ -143,27 +143,17 @@
             </div>
         </div>
 
-        <!-- TAB 4: ADVANCED SETTINGS PANEL (Matches Screenshot) -->
+        <!-- TAB 4: PREFERENCES -->
         <div id="tab-settings" class="tab-content hidden">
-            <div class="flex items-center gap-2 mb-4">
-                <div class="w-1.5 h-4 bg-[#00ffcc] rounded-full"></div>
-                <h2 class="text-xs font-bold uppercase text-zinc-400 tracking-widest">Automation Settings</h2>
-            </div>
-
-            <div id="settings-loading" class="text-xs text-zinc-500 text-center py-6">Loading linked accounts...</div>
-
-            <!-- Dynamic Settings Container (Populates for each linked account) -->
-            <div id="settings-container" class="space-y-4"></div>
-
-            <!-- RESTORED: Profile Info Block (Resolves Javascript Crash) -->
-            <div class="mt-6 bg-[#0d0e12] border border-zinc-800/60 p-4 rounded-xl text-xs space-y-3 shadow-md">
+            <h2 class="text-sm font-bold text-zinc-400 tracking-wider uppercase mb-3">Preferences</h2>
+            <div class="bg-[#0d0e12] border border-zinc-800/80 p-4 rounded-xl text-xs space-y-3 shadow-md">
                 <div class="flex justify-between items-center">
                     <span class="text-zinc-500 uppercase tracking-wider text-[10px]">Telegram ID</span>
                     <span id="my-tg-id" class="font-mono text-zinc-200 text-sm">Pending</span>
                 </div>
                 <div class="flex justify-between items-center border-t border-zinc-800/60 pt-3">
                     <span class="text-zinc-500 uppercase tracking-wider text-[10px]">License Expiration</span>
-                    <span id="my-license-expiry" class="font-bold text-yellow-500 font-sans">Checking...</span>
+                    <span id="my-license-expiry" class="font-bold text-yellow-500">Checking...</span>
                 </div>
             </div>
         </div>
@@ -187,7 +177,7 @@
             </button>
             <button class="nav-btn flex flex-col items-center gap-1 flex-1 text-zinc-500 transition-all duration-150" onclick="switchTab('settings', this)">
                 <i data-lucide="sliders" class="w-4.5 h-4.5"></i>
-                <span class="text-[9px] font-bold uppercase tracking-wider mt-0.5">Settings</span>
+                <span class="text-[9px] font-bold uppercase tracking-wider mt-0.5">Prefs</span>
             </button>
         </nav>
     </div>
@@ -209,15 +199,9 @@
                 document.getElementById('user-avatar').innerText = user.first_name.charAt(0).toUpperCase();
             }
         }
-        
-        // Resolves the bottom load check (Line 200)
-        const tgIdEl = document.getElementById('my-tg-id');
-        if (tgIdEl) {
-            tgIdEl.innerText = telegramUserId;
-        }
+        document.getElementById('my-tg-id').innerText = telegramUserId;
 
         let globalClaimsLogs = []; 
-        let globalAccounts = [];
         let activeTimeFilter = 'today';
         let activeTypeFilter = 'all_types';
 
@@ -237,17 +221,9 @@
                 });
                 if (response.ok) {
                     const data = await response.json();
+                    document.getElementById('my-license-expiry').innerText = data.expiry_date;
                     
-                    // Resolves the API response check safely (Line 223)
-                    const expiryEl = document.getElementById('my-license-expiry');
-                    if (expiryEl) {
-                        expiryEl.innerText = data.expiry_date;
-                    }
-                    
-                    globalAccounts = data.accounts || [];
-                    renderAccounts(globalAccounts);
-                    renderSettingsPanel(globalAccounts);
-                    
+                    renderAccounts(data.accounts);
                     globalClaimsLogs = data.logs || [];
                     processAndFilterLogs();
                 }
@@ -281,112 +257,6 @@
                 container.appendChild(card);
             });
             lucide.createIcons();
-        }
-
-        function renderSettingsPanel(accounts) {
-            const loading = document.getElementById('settings-loading');
-            const container = document.getElementById('settings-container');
-            container.innerHTML = "";
-
-            if (!accounts || accounts.length === 0) {
-                loading.innerText = "No linked accounts found. Please link an account first.";
-                loading.classList.remove('hidden');
-                return;
-            }
-            loading.classList.add('hidden');
-
-            accounts.forEach(acc => {
-                const card = document.createElement('div');
-                card.className = "bg-[#0d0e12] border border-zinc-800/60 rounded-2xl p-4 shadow-md";
-                
-                const daysList = acc.claim_days ? acc.claim_days.split(",") : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-                const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-                const fullDaysMap = {"Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday", "Thu": "Thursday", "Fri": "Friday", "Sat": "Saturday", "Sun": "Sunday"};
-
-                let daysHTML = "";
-                daysOfWeek.forEach(d => {
-                    const isChecked = daysList.includes(d);
-                    daysHTML += `
-                        <div class="flex justify-between items-center py-2 border-b border-zinc-800/40">
-                            <span class="text-xs text-zinc-400">${fullDaysMap[d]}</span>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" data-day="${d}" class="sr-only peer day-toggle-${acc.id}" ${isChecked ? 'checked' : ''}>
-                                <div class="w-9 h-5 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-zinc-300 after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#00ffcc]"></div>
-                            </label>
-                        </div>`;
-                });
-
-                card.innerHTML = `
-                    <div class="flex justify-between items-center mb-4 pb-2 border-b border-zinc-800">
-                        <div>
-                            <span class="text-[9px] uppercase tracking-wider font-bold text-[#00ffcc]">${acc.platform}</span>
-                            <h3 class="text-sm font-bold text-zinc-200">${acc.username}</h3>
-                        </div>
-                        <button onclick="saveAccountSettings(${acc.id})" class="bg-[#00ffcc] text-[#07070a] text-[10px] font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 uppercase tracking-wider shadow-lg shadow-[#00ffcc]/10">
-                            <i data-lucide="check" class="w-3.5 h-3.5"></i> Save
-                        </button>
-                    </div>
-
-                    <div class="mb-5">
-                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-2">Claim Minimum Value</label>
-                        <select id="min-amount-${acc.id}" class="w-full bg-[#07070a] border border-zinc-800 text-zinc-300 p-2.5 rounded-lg text-xs outline-none">
-                            <option value="0.0" ${acc.min_amount == 0.0 ? 'selected' : ''}>Claim All Codes (No Limit)</option>
-                            <option value="1.0" ${acc.min_amount == 1.0 ? 'selected' : ''}>Claim above $1.00</option>
-                            <option value="2.0" ${acc.min_amount == 2.0 ? 'selected' : ''}>Claim above $2.00</option>
-                            <option value="3.0" ${acc.min_amount == 3.0 ? 'selected' : ''}>Claim above $3.00</option>
-                            <option value="4.0" ${acc.min_amount == 4.0 ? 'selected' : ''}>Claim above $4.00</option>
-                            <option value="5.0" ${acc.min_amount == 5.0 ? 'selected' : ''}>Claim above $5.00</option>
-                            <option value="10.0" ${acc.min_amount == 10.0 ? 'selected' : ''}>Claim above $10.00</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-2">Claim Days</label>
-                        <div class="space-y-1">
-                            ${daysHTML}
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-            lucide.createIcons();
-        }
-
-        async function saveAccountSettings(accountId) {
-            const minAmount = parseFloat(document.getElementById(`min-amount-${accountId}`).value);
-            
-            const dayCheckboxes = document.querySelectorAll(`.day-toggle-${accountId}`);
-            const selectedDays = [];
-            dayCheckboxes.forEach(cb => {
-                if (cb.checked) {
-                    selectedDays.push(cb.getAttribute('data-day'));
-                }
-            });
-
-            const daysStr = selectedDays.join(",");
-
-            try {
-                const response = await fetch(`${API_SERVER}/accounts/update_settings`, {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json",
-                        "ngrok-skip-browser-warning": "69420"
-                    },
-                    body: JSON.stringify({
-                        account_id: accountId,
-                        telegram_id: telegramUserId,
-                        min_amount: minAmount,
-                        claim_days: daysStr
-                    })
-                });
-                if (response.ok) {
-                    if (tg) tg.showAlert("Automation filters updated successfully!");
-                    else alert("Settings saved!");
-                    loadUserInfo();
-                }
-            } catch (err) {
-                console.error("Save failed: ", err);
-            }
         }
 
         function changeTimeFilter(timeId, element) {
@@ -474,4 +344,56 @@
                     document.getElementById('acc-username').value = "";
                     document.getElementById('acc-token').value = "";
                     toggleAddAccountForm();
-                    lo
+                    loadUserInfo();
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function deleteAccount(accountId) {
+            try {
+                const response = await fetch(`${API_SERVER}/accounts/delete`, {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "69420"
+                    },
+                    body: JSON.stringify({ account_id: accountId, telegram_id: telegramUserId })
+                });
+                if (response.ok) loadUserInfo();
+            } catch (err) { console.error(err); }
+        }
+
+        async function requestCheckout(planName, amount) {
+            try {
+                const response = await fetch(`${API_SERVER}/payments/create-invoice`, {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "ngrok-skip-browser-warning": "69420"
+                    },
+                    body: JSON.stringify({ telegram_id: telegramUserId, amount: amount, plan_name: planName })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (tg) tg.openLink(data.checkout_url);
+                    else window.open(data.checkout_url, '_blank');
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        function switchTab(tabId, buttonElement) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn flex flex-col items-center gap-1 flex-1 text-slate-500 transition-all duration-150";
+            });
+            buttonElement.className = `nav-btn flex flex-col items-center gap-1 flex-1 transition-all duration-150 ${tabId === 'logs' ? 'text-[#00ffcc]' : 'text-violet-400'}`;
+            
+            if (tabId === 'logs' || tabId === 'accounts') loadUserInfo();
+        }
+
+        loadUserInfo();
+    </script>
+</body>
+</html>
